@@ -1,0 +1,33 @@
+{
+  "name": "my-first-fastify",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "my first fastify app",
+  "main": "src/index.js",
+  "packageManager": "pnpm@9.4.0",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "watch": "tsx watch src/index.ts",
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "check-types": "tsc --noEmit || true",
+    "lint": "eslint . || true"
+  },
+  "keywords": [],
+  "author": "Paul Lee",
+  "license": "MIT",
+  "dependencies": {
+    "fastify": "^4.28.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.6.0",
+    "@types/node": "^20.14.10",
+    "eslint": "9.x",
+    "globals": "^15.8.0",
+    "prettier": "3.3.2",
+    "tsx": "^4.16.2",
+    "turbo": "^2.0.6",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.15.0"
+  }
+}

@@ -1,9 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "ui": "stream",
+  "ui": "tui",
   "tasks": {
-    "start": {
-      "persistent": true,
+    "setup": {
+      "cache": false
+    },
+    "env": {
       "cache": false
     },
     "watch": {
@@ -15,13 +17,21 @@
         "dist/**"
       ]
     },
+    "clean": {
+      "cache": false
+    },
     "check-types": {},
     "lint": {
       "dependsOn": [
         "check-types"
       ]
     },
-    "clean": {
+    "vitest": {
+      "dependsOn": [
+        "lint"
+      ]
+    },
+    "prettier": {
       "cache": false
     }
   }

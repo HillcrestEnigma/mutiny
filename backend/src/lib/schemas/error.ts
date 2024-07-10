@@ -1,26 +1,30 @@
-import { Type, type Static } from "@fastify/type-provider-typebox"
+import { z } from "zod";
 import { GenericResponse } from "./response";
 
-const ErrorType = Type.Union([
-  Type.Literal("validation"),
-  Type.Literal("notfound"),
-  Type.Literal("forbidden"),
-  Type.Literal("unauthorized"),
-  Type.Literal("internal"),
+const ErrorType = z.enum([
+  "validation",
+  "notfound",
+  "forbidden",
+  "unauthorized",
+  "internal",
 ]);
 
-export const ErrorResponse = Type.Intersect([
-  GenericResponse,
-  Type.Object({
+export const GenericErrorResponse = GenericResponse.and(
+  z.object({
     error: ErrorType,
   }),
-]);
-export type ErrorResponse = Static<typeof ErrorResponse>;
+);
+export type GenericErrorResponse = z.infer<typeof GenericErrorResponse>;
 
-export const ValidationErrorResponse = Type.Intersect([
-  ErrorResponse,
-  Type.Object({
-    field: Type.String(),
+export const ValidationErrorResponse = GenericErrorResponse.and(
+  z.object({
+    field: z.string(),
   }),
+);
+export type ValidationErrorResponse = z.infer<typeof ValidationErrorResponse>;
+
+export const ErrorResponse = z.union([
+  ValidationErrorResponse,
+  GenericErrorResponse,
 ]);
-export type ValidationErrorResponse = Static<typeof ValidationErrorResponse>;
+export type ErrorResponse = z.infer<typeof ErrorResponse>;

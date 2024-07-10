@@ -16,7 +16,7 @@ if (!existsSync("./.env.test")) {
   await $`dotenvx set DATABASE_URL "file:./test.sqlite3" --plain -f ./.env.test`;
 }
 
-await $`prisma generate`
+await $`prisma generate`;
 
 if (modifiedProject) {
   echo(`Done setting up project.

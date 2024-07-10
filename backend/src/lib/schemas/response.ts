@@ -1,6 +1,6 @@
-import { Type, type Static } from "@fastify/type-provider-typebox";
+import { z } from "zod";
 
-export const GenericResponse = Type.Object({
-  message: Type.String(),
+export const GenericResponse = z.object({
+  message: z.string(),
 });
-export type GenericResponse = Static<typeof GenericResponse>;
+export type GenericResponse = z.infer<typeof GenericResponse>;

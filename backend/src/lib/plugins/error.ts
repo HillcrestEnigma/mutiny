@@ -1,21 +1,10 @@
 import { FastifyPluginAsync, FastifyInstance } from "fastify";
 import { ErrorResponse, ValidationErrorResponse } from "../schemas/error.ts";
 import fp from "fastify-plugin";
+import { ZodError, ZodIssue } from "zod";
 
 export const errorPlugin: FastifyPluginAsync = fp(
   async (app: FastifyInstance) => {
-    app.setSchemaErrorFormatter((errors, dataVar) => {
-      const error = errors[0];
-      const field = `${dataVar}${error.instancePath}`;
-
-      return new Error(`${field}: ${error.message}.`);
-      // return {
-      //   error: 'validation',
-      //   message: `${field}: ${error.message}.`,
-      //   field,
-      // }
-    });
-
     app.setErrorHandler(async (error, _, reply) => {
       let statusCode = 500;
       let response: ErrorResponse | ValidationErrorResponse = {
@@ -23,19 +12,23 @@ export const errorPlugin: FastifyPluginAsync = fp(
         message: "Internal server error.",
       };
 
-      if (error.validation) {
-        const validationError = error.validation[0];
-        const field = `${error.validationContext}${validationError.instancePath}`;
+      if (error instanceof ZodError) {
+        const issue = error.issues[0] as ZodIssue;
 
         statusCode = 400;
         response = {
           ...response,
-          message: error.message,
+          message: issue.message,
           error: "validation",
-          field,
+          field: issue.path[0].toString(),
         };
       } else {
-        app.log.error(error);
+        if (
+          process.env.NODE_ENV === "development" ||
+          process.env.FORCE_LOG === "1"
+        ) {
+          app.log.error(error);
+        }
       }
 
       return reply.code(statusCode).send(response);

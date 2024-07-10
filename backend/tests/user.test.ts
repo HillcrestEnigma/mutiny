@@ -38,7 +38,7 @@ describe("Sign Up", async () => {
     const result = response.json() as ValidationErrorResponse;
 
     expect(result.error).toBe("validation");
-    expect(result.field).toBe("body/username");
+    expect(result.field).toBe("username");
   });
 
   test("Reject signup with bad email", async () => {
@@ -57,7 +57,7 @@ describe("Sign Up", async () => {
     const result = response.json() as ValidationErrorResponse;
 
     expect(result.error).toBe("validation");
-    expect(result.field).toBe("body/email");
+    expect(result.field).toBe("email");
   });
 
   test("Reject signup with bad password", async () => {
@@ -76,7 +76,7 @@ describe("Sign Up", async () => {
     const result = response.json() as ValidationErrorResponse;
 
     expect(result.error).toBe("validation");
-    expect(result.field).toBe("body/password");
+    expect(result.field).toBe("password");
   });
 
   test("Reject signup with existing username and email", async () => {

@@ -5,12 +5,12 @@ import {
   SignOutPayload,
   AuthErrorResponse,
 } from "../lib/schemas/auth.ts";
-import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { crud } from "../lib/crud/index.ts";
 import * as argon2 from "@node-rs/argon2";
 import { lucia } from "../lib/plugins/setup.ts";
 
-export const sessionRoutes: FastifyPluginAsyncTypebox = async (
+export const sessionRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
 ) => {
   app.post(

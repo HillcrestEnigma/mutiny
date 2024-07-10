@@ -4,13 +4,13 @@ import {
   AuthSuccessResponse,
   AuthErrorResponse,
 } from "../lib/schemas/auth.ts";
-import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
+import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { crud } from "../lib/crud/index.ts";
 import { generateIdFromEntropySize } from "lucia";
 import * as argon2 from "@node-rs/argon2";
 import { lucia } from "../lib/plugins/setup.ts";
 
-export const userRoutes: FastifyPluginAsyncTypebox = async (
+export const userRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
 ) => {
   app.post(

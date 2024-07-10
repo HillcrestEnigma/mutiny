@@ -1,73 +1,67 @@
-import { Type, type Static } from "@fastify/type-provider-typebox";
 import { GenericResponse } from "./response";
 import { ErrorResponse, ValidationErrorResponse } from "./error";
+import { z } from "zod";
 
-const EmailAddress = Type.String({
-  format: "email",
-  lowercase: true,
-});
+const EmailAddress = z.string().email().toLowerCase();
 
-export const Email = Type.Object({
+export const Email = z.object({
   address: EmailAddress,
-  verified: Type.Boolean(),
-  primary: Type.Boolean(),
+  verified: z.boolean(),
+  primary: z.boolean(),
 });
-export type Email = Static<typeof Email>;
+export type Email = z.infer<typeof Email>;
 
-const Username = Type.String({
-  format: "username",
-  minLength: 3,
-  maxLength: 32,
-});
+const usernameRegex = /^[a-z][-a-z0-9_]*$/i;
 
-export const User = Type.Object({
+const Username = z
+  .string()
+  .min(3)
+  .max(32)
+  .refine((value) => usernameRegex.test(value));
+
+export const User = z.object({
   username: Username,
-  emails: Type.Array(Email),
+  emails: Email.array(),
 });
-export type User = Static<typeof User>;
+export type User = z.infer<typeof User>;
 
-export const Session = Type.Object({
-  id: Type.String(),
-  expiresAt: Type.Date(),
-  fresh: Type.Boolean(),
-  userId: Type.String(),
+export const Session = z.object({
+  id: z.string(),
+  expiresAt: z.string().datetime(),
+  fresh: z.boolean(),
+  userId: z.string(),
 });
-export type Session = Static<typeof Session>;
+export type Session = z.infer<typeof Session>;
 
-export const AuthSuccessResponse = Type.Intersect([
-  GenericResponse,
-  Type.Object({
-    sessionId: Type.Optional(Type.String()),
-    user: Type.Optional(User),
+export const AuthSuccessResponse = GenericResponse.and(
+  z.object({
+    sessionId: z.string().optional(),
   }),
-]);
-export type AuthSuccessResponse = Static<typeof AuthSuccessResponse>;
+);
+export type AuthSuccessResponse = z.infer<typeof AuthSuccessResponse>;
 
-export const AuthErrorResponse = Type.Union([
+export const AuthErrorResponse = z.union([
   ValidationErrorResponse,
   ErrorResponse,
 ]);
-export type AuthErrorResponse = Static<typeof AuthErrorResponse>;
+export type AuthErrorResponse = z.infer<typeof AuthErrorResponse>;
 
-const Password = Type.String({
-  minLength: 8,
-  maxLength: 128,
-});
+const Password = z.string().min(8).max(128);
 
-export const SignUpPayload = Type.Object({
+export const SignUpPayload = z.object({
   username: Username,
   email: EmailAddress,
   password: Password,
 });
-export type SignUpPayload = Static<typeof SignUpPayload>;
+export type SignUpPayload = z.infer<typeof SignUpPayload>;
 
-export const SignInPayload = Type.Object({
-  usernameOrEmail: Type.String(),
+export const SignInPayload = z.object({
+  usernameOrEmail: z.union([EmailAddress, Username]),
   password: Password,
 });
-export type SignInPayload = Static<typeof SignInPayload>;
+export type SignInPayload = z.infer<typeof SignInPayload>;
 
-export const SignOutPayload = Type.Object({
-  sessionId: Type.String(),
+export const SignOutPayload = z.object({
+  sessionId: z.string(),
 });
-export type SignOutPayload = Static<typeof SignOutPayload>;
+export type SignOutPayload = z.infer<typeof SignOutPayload>;

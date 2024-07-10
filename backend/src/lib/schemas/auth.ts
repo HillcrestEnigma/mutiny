@@ -35,7 +35,7 @@ export type Session = z.infer<typeof Session>;
 
 export const AuthSuccessResponse = GenericResponse.and(
   z.object({
-    sessionId: z.string().optional(),
+    sessionId: z.string(),
   }),
 );
 export type AuthSuccessResponse = z.infer<typeof AuthSuccessResponse>;

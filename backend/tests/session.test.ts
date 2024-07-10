@@ -1,11 +1,10 @@
-import { describe, expect, test } from "vitest";
+import { beforeEach, beforeAll, describe, expect, test } from "vitest";
 import { AuthSuccessResponse } from "../src/lib/schemas/auth.ts";
 import { app } from "./setup.ts";
 import { ValidationErrorResponse } from "../src/lib/schemas/error.ts";
-import { beforeEach } from "vitest";
 
 describe("Sign In", async () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     await app.inject({
       method: "POST",
       url: "/user",
@@ -100,5 +99,65 @@ describe("Sign In", async () => {
     const result = response.json() as ValidationErrorResponse;
 
     expect(result.error).toBe("forbidden");
+  });
+});
+
+describe("Sign Out", async () => {
+  let sessionId: string;
+
+  beforeAll(async () => {
+    await app.inject({
+      method: "POST",
+      url: "/user",
+      payload: {
+        username: "testuser_signout",
+        email: "testuser_signout@example.com",
+        password: "password",
+      },
+    });
+  });
+
+  beforeEach(async () => {
+    const response = await app.inject({
+      method: "POST",
+      url: "/session",
+      payload: {
+        usernameOrEmail: "testuser_signout@example.com",
+        password: "password",
+      },
+    });
+
+    const result = response.json() as AuthSuccessResponse;
+
+    sessionId = result.sessionId;
+  });
+
+  test("Sign out a user", async () => {
+    const response = await app.inject({
+      method: "DELETE",
+      url: "/session",
+      payload: {
+        sessionId,
+      },
+    });
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  test("Reject sign out with invalid payload", async () => {
+    const response = await app.inject({
+      method: "DELETE",
+      url: "/session",
+      payload: {
+        sessionId: 1,
+      },
+    });
+
+    expect(response.statusCode).toBe(400);
+
+    const result = response.json() as ValidationErrorResponse;
+
+    expect(result.error).toBe("validation");
+    expect(result.field).toBe("sessionId");
   });
 });

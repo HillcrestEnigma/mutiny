@@ -1,4 +1,4 @@
-import { beforeEach, beforeAll, afterAll } from "vitest";
+import { beforeAll, afterAll } from "vitest";
 import { PrismaClient } from "@prisma/client";
 import { build } from "../src/app";
 
@@ -15,9 +15,7 @@ export const app = await build({
 
 beforeAll(async () => {
   await prisma.$connect();
-});
 
-beforeEach(async () => {
   await prisma.$transaction([
     prisma.session.deleteMany(),
     prisma.user.deleteMany(),

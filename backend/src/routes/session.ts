@@ -9,6 +9,7 @@ import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { crud } from "../lib/crud/index.ts";
 import * as argon2 from "@node-rs/argon2";
 import { lucia } from "../lib/plugins/setup.ts";
+import { GenericResponse } from "../lib/schemas/response.ts";
 
 export const sessionRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
@@ -59,14 +60,26 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
     },
   );
 
-  app.delete("/session", async (request, reply) => {
-    const { sessionId } = request.body as SignOutPayload;
+  app.delete(
+    "/session",
+    {
+      schema: {
+        body: SignOutPayload,
+        response: {
+          200: GenericResponse,
+          default: AuthErrorResponse,
+        },
+      },
+    },
+    async (request, reply) => {
+      const { sessionId } = request.body as SignOutPayload;
 
-    await lucia.invalidateSession(sessionId);
+      await lucia.invalidateSession(sessionId);
 
-    reply.code(200);
-    return {
-      message: "Successfully invalidated session.",
-    };
-  });
+      reply.code(200);
+      return {
+        message: "Successfully invalidated session.",
+      };
+    },
+  );
 };

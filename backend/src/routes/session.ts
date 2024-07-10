@@ -19,7 +19,7 @@ export const sessionRoutes: FastifyPluginAsyncTypebox = async (
       schema: {
         body: SignInPayload,
         response: {
-          200: AuthSuccessResponse,
+          201: AuthSuccessResponse,
           default: AuthErrorResponse,
         },
       },

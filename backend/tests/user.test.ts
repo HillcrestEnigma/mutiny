@@ -3,7 +3,7 @@ import { AuthSuccessResponse } from "../src/lib/schemas/auth.ts";
 import { app } from "./setup.ts";
 import { ValidationErrorResponse } from "../src/lib/schemas/error.ts";
 
-describe("Users", async () => {
+describe("Sign Up", async () => {
   test("Signup a new user", async () => {
     const response = await app.inject({
       method: "POST",

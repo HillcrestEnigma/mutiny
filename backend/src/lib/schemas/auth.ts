@@ -4,6 +4,7 @@ import { ErrorResponse, ValidationErrorResponse } from "./error";
 
 const EmailAddress = Type.String({
   format: "email",
+  lowercase: true,
 });
 
 export const Email = Type.Object({

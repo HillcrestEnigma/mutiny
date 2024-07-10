@@ -1,4 +1,4 @@
-import { Type, type Static } from "@fastify/type-provider-typebox";
+import { Type, type Static } from "@fastify/type-provider-typebox"
 import { GenericResponse } from "./response";
 
 const ErrorType = Type.Union([

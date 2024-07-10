@@ -2,7 +2,7 @@ import { beforeEach, beforeAll, afterAll } from "vitest";
 import { PrismaClient } from "@prisma/client";
 import { build } from "../src/app";
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 export const app = await build({
   logger: {

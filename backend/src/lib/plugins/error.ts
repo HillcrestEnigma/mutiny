@@ -35,9 +35,7 @@ export const errorPlugin: FastifyPluginAsync = fp(
           field,
         };
       } else {
-        if (process.env.NODE_ENV == "development") {
-          app.log.error(error);
-        }
+        app.log.error(error);
       }
 
       return reply.code(statusCode).send(response);

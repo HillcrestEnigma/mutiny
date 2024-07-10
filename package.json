@@ -1,55 +1,21 @@
 {
-  "name": "my-first-fastify",
-  "description": "my first fastify app",
+  "name": "mutiny",
+  "description": "Mutiny Monorepo",
   "keywords": [],
   "author": "Paul Lee",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "license": "MIT",
   "type": "module",
-  "main": "src/server.js",
+  "private": true,
   "packageManager": "pnpm@9.4.0",
-  "prisma": {
-    "schema": "db/schema.prisma"
-  },
-  "scripts": {
-    "setup": "tsx scripts/project-setup.ts",
-    "env": "dotenvx run -f .env -f .env.local",
-    "watch": "pnpm run env -- tsx watch src/server.ts",
-    "build": "swc ./src -d dist",
-    "clean": "tree ./dist -L 1 | head && rm -rfI ./dist",
-    "check-types": "tsc --noEmit || true",
-    "lint": "eslint . || true",
-    "test:integration": "tsx scripts/test-integration.ts",
-    "format": "prettier ./src ./tests ./scripts --write",
-    "db:migrate:new": "pnpm run env -- prisma migrate dev",
-    "db:migrate:apply": "pnpm run env -- prisma migrate deploy"
-  },
-  "dependencies": {
-    "@fastify/type-provider-typebox": "^4.0.0",
-    "@lucia-auth/adapter-prisma": "^4.0.1",
-    "@node-rs/argon2": "^1.8.3",
-    "@prisma/client": "5.16.1",
-    "fastify": "^4.28.1",
-    "fastify-plugin": "^4.5.1",
-    "lucia": "^3.2.0"
-  },
+  "prettier": "@repo/config-prettier",
   "devDependencies": {
-    "@dotenvx/dotenvx": "^1.5.0",
-    "@eslint/js": "^9.6.0",
-    "@swc/cli": "^0.4.0",
-    "@swc/core": "1.6.11-nightly-20240706.1",
-    "@types/node": "^20.14.10",
-    "eslint": "9.x",
-    "eslint-config-prettier": "^9.1.0",
-    "globals": "^15.8.0",
-    "pino-pretty": "^11.2.1",
-    "prettier": "3.3.2",
-    "prisma": "^5.16.1",
-    "tsx": "^4.16.2",
     "turbo": "^2.0.6",
-    "typescript": "^5.5.3",
-    "typescript-eslint": "^7.15.0",
-    "vitest": "^1.6.0",
-    "zx": "^8.1.4"
+    "zx": "^8.1.4",
+    "@types/node": "^20.14.10",
+    "tsx": "^4.16.2",
+    "@repo/config-typescript": "workspace:*",
+    "@repo/config-eslint": "workspace:*",
+    "@repo/config-prettier": "workspace:*"
   }
 }

@@ -1,6 +1,6 @@
-node_modules/
-dist/
-.turbo/
+node_modules
+dist
+.turbo
 .env.*
-db/**/*.sqlite3
-db/**/*.sqlite3-journal
+*.sqlite3
+*.sqlite3-journal

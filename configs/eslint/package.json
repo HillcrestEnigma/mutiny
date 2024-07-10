@@ -1,0 +1,11 @@
+{
+  "name": "@repo/config-eslint",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@eslint/js": "^9.6.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.8.0",
+    "typescript-eslint": "^7.16.0"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@repo/config-prettier",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./index.js"
+  }
+}

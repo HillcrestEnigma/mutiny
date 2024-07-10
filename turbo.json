@@ -5,12 +5,9 @@
     "setup": {
       "cache": false
     },
-    "env": {
-      "cache": false
-    },
     "watch": {
-      "persistent": true,
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
     "build": {
       "outputs": [
@@ -20,18 +17,27 @@
     "clean": {
       "cache": false
     },
-    "check-types": {},
-    "lint": {
+    "typecheck": {},
+    "lint": {},
+    "check": {
       "dependsOn": [
-        "check-types"
-      ]
-    },
-    "vitest": {
-      "dependsOn": [
+        "typecheck",
         "lint"
       ]
     },
-    "prettier": {
+    "format": {
+      "cache": false
+    },
+    "test:integration": {},
+    "test": {
+      "dependsOn": [
+        "test:integration"
+      ]
+    },
+    "database:migrate:new": {
+      "cache": false
+    },
+    "database:migrate:apply": {
       "cache": false
     }
   }

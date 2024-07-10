@@ -2,7 +2,13 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "tasks": {
+    "//#setup": {
+      "cache": false
+    },
     "setup": {
+      "dependsOn": [
+        "//#setup"
+      ],
       "cache": false
     },
     "watch": {
@@ -26,6 +32,9 @@
       ]
     },
     "format": {
+      "dependsOn": [
+        "check"
+      ],
       "cache": false
     },
     "test:integration": {},

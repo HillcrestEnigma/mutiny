@@ -9,13 +9,17 @@
   "private": true,
   "packageManager": "pnpm@9.4.0",
   "prettier": "@repo/config-prettier",
+  "scripts": {
+    "setup": "husky"
+  },
   "devDependencies": {
-    "turbo": "^2.0.6",
-    "zx": "^8.1.4",
-    "@types/node": "^20.14.10",
-    "tsx": "^4.16.2",
-    "@repo/config-typescript": "workspace:*",
     "@repo/config-eslint": "workspace:*",
-    "@repo/config-prettier": "workspace:*"
+    "@repo/config-prettier": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "@types/node": "^20.14.10",
+    "husky": "^9.0.11",
+    "tsx": "^4.16.2",
+    "turbo": "^2.0.6",
+    "zx": "^8.1.4"
   }
 }

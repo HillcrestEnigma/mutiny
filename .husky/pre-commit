@@ -1,0 +1,1 @@
+TURBO_UI=0 turbo run --no-daemon --output-logs=errors-only format

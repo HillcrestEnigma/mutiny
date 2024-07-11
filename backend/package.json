@@ -25,6 +25,7 @@
     "database:migrate:apply": "tsx ./scripts/run-env.ts -- prisma migrate deploy"
   },
   "dependencies": {
+    "@fastify/auth": "^4.6.1",
     "@lucia-auth/adapter-prisma": "^4.0.1",
     "@node-rs/argon2": "^1.8.3",
     "@prisma/client": "5.16.2",

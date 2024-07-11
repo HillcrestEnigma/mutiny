@@ -3,16 +3,38 @@ import {
   SignUpPayload,
   AuthSuccessResponse,
   AuthErrorResponse,
+  UserDetailResponse,
 } from "../lib/schemas/auth.ts";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { crud } from "../lib/crud/index.ts";
-import { generateIdFromEntropySize } from "lucia";
 import * as argon2 from "@node-rs/argon2";
-import { lucia } from "../lib/plugins/setup.ts";
+import { lucia } from "../lib/lucia.ts";
+import { ErrorResponse } from "../lib/schemas/error.ts";
+import { prisma } from "../lib/prisma.ts";
+import { generateIdFromEntropySize } from "lucia";
 
 export const userRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
 ) => {
+  app.get(
+    "/user",
+    {
+      schema: {
+        response: {
+          200: UserDetailResponse,
+          default: ErrorResponse,
+        },
+      },
+      ...app.authRequired,
+    },
+    async (request) => {
+      return {
+        message: `Details on authenticated user ${request.user?.username}`,
+        session: request.session,
+        user: request.user,
+      };
+    },
+  );
+
   app.post(
     "/user",
     {
@@ -27,7 +49,20 @@ export const userRoutes: FastifyPluginAsyncZod = async (
     async (request, reply) => {
       const { username, email, password } = request.body as SignUpPayload;
 
-      const user = await crud.user.find({ username, email });
+      let user = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { username },
+            {
+              emails: {
+                some: {
+                  address: email,
+                },
+              },
+            },
+          ],
+        },
+      });
 
       if (user) {
         reply.code(401);
@@ -45,7 +80,19 @@ export const userRoutes: FastifyPluginAsyncZod = async (
         parallelism: 1,
       });
 
-      await crud.user.create({ userId, username, email, passwordHash });
+      user = await prisma.user.create({
+        data: {
+          id: userId,
+          username,
+          emails: {
+            create: {
+              address: email,
+              primary: true,
+            },
+          },
+          passwordHash: passwordHash,
+        },
+      });
 
       const session = await lucia.createSession(userId, {});
 

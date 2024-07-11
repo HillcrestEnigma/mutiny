@@ -6,10 +6,10 @@ import {
   AuthErrorResponse,
 } from "../lib/schemas/auth.ts";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { crud } from "../lib/crud/index.ts";
 import * as argon2 from "@node-rs/argon2";
-import { lucia } from "../lib/plugins/setup.ts";
+import { lucia } from "../lib/lucia.ts";
 import { GenericResponse } from "../lib/schemas/response.ts";
+import { prisma } from "../lib/prisma.ts";
 
 export const sessionRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
@@ -33,9 +33,19 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
         error: "forbidden",
       };
 
-      const user = await crud.user.find({
-        username: usernameOrEmail,
-        email: usernameOrEmail,
+      const user = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { username: usernameOrEmail },
+            {
+              emails: {
+                some: {
+                  address: usernameOrEmail,
+                },
+              },
+            },
+          ],
+        },
       });
 
       if (!user) {

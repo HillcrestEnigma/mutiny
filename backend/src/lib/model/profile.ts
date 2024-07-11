@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
-import { prisma } from "../plugins/setup.ts";
+import { prisma } from "../prisma.ts";
 
-export const userMethods = {
+export const profileModel = {
   create: async (
     data: {
       userId: string;

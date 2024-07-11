@@ -2,6 +2,7 @@ import { FastifyPluginAsync, FastifyInstance } from "fastify";
 import { ErrorResponse, ValidationErrorResponse } from "../schemas/error.ts";
 import fp from "fastify-plugin";
 import { ZodError, ZodIssue } from "zod";
+import { AuthenticationError } from "./auth.ts";
 
 export const errorPlugin: FastifyPluginAsync = fp(
   async (app: FastifyInstance) => {
@@ -17,10 +18,15 @@ export const errorPlugin: FastifyPluginAsync = fp(
 
         statusCode = 400;
         response = {
-          ...response,
-          message: issue.message,
           error: "validation",
-          field: issue.path[0].toString(),
+          message: issue.message,
+          field: issue.path.join("."),
+        };
+      } else if (error instanceof AuthenticationError) {
+        statusCode = 401;
+        response = {
+          error: "unauthorized",
+          message: error.message,
         };
       } else {
         if (

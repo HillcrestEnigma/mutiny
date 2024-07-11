@@ -5,6 +5,7 @@ import { z } from "zod";
 const EmailAddress = z.string().email().toLowerCase();
 
 export const Email = z.object({
+  userId: z.string(),
   address: EmailAddress,
   verified: z.boolean(),
   primary: z.boolean(),
@@ -20,6 +21,7 @@ const Username = z
   .refine((value) => usernameRegex.test(value));
 
 export const User = z.object({
+  id: z.string(),
   username: Username,
   emails: Email.array(),
 });
@@ -27,7 +29,7 @@ export type User = z.infer<typeof User>;
 
 export const Session = z.object({
   id: z.string(),
-  expiresAt: z.string().datetime(),
+  expiresAt: z.date(),
   fresh: z.boolean(),
   userId: z.string(),
 });
@@ -65,3 +67,11 @@ export const SignOutPayload = z.object({
   sessionId: z.string(),
 });
 export type SignOutPayload = z.infer<typeof SignOutPayload>;
+
+export const UserDetailResponse = GenericResponse.and(
+  z.object({
+    session: Session,
+    user: User,
+  }),
+);
+export type UserDetailResponse = z.infer<typeof UserDetailResponse>;

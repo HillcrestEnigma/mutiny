@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { GenericResponse } from "./response";
+import { GenericResponse } from "./generic";
 
 const ErrorType = z.enum([
   "validation",

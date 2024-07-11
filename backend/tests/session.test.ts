@@ -1,7 +1,6 @@
 import { beforeEach, beforeAll, describe, expect, test } from "vitest";
-import { AuthSuccessResponse } from "../src/lib/schemas/auth.ts";
-import { app } from "./setup.ts";
-import { ValidationErrorResponse } from "../src/lib/schemas/error.ts";
+import { SessionResponse, ValidationErrorResponse } from "@repo/data/schemas";
+import { app } from "./setup";
 
 describe("Sign In", async () => {
   beforeAll(async () => {
@@ -28,7 +27,7 @@ describe("Sign In", async () => {
 
     expect(response.statusCode).toBe(201);
 
-    const result = response.json() as AuthSuccessResponse;
+    const result = response.json() as SessionResponse;
 
     expect(result.sessionId).toHaveLength(40);
   });
@@ -45,7 +44,7 @@ describe("Sign In", async () => {
 
     expect(response.statusCode).toBe(201);
 
-    const result = response.json() as AuthSuccessResponse;
+    const result = response.json() as SessionResponse;
 
     expect(result.sessionId).toHaveLength(40);
   });
@@ -62,7 +61,7 @@ describe("Sign In", async () => {
 
     expect(response.statusCode).toBe(201);
 
-    const result = response.json() as AuthSuccessResponse;
+    const result = response.json() as SessionResponse;
 
     expect(result.sessionId).toHaveLength(40);
   });
@@ -127,7 +126,7 @@ describe("Sign Out", async () => {
       },
     });
 
-    const result = response.json() as AuthSuccessResponse;
+    const result = response.json() as SessionResponse;
 
     sessionId = result.sessionId;
   });

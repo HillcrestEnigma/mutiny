@@ -1,1 +1,2 @@
-TURBO_UI=0 turbo run --no-daemon --output-logs=errors-only format
+TURBO_UI=0 turbo run --no-daemon --output-logs=errors-only check
+exit 1

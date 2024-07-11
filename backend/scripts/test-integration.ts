@@ -1,5 +1,6 @@
 import { $, argv } from "zx";
 import { config } from "@dotenvx/dotenvx";
+import { dbMigrate } from "@repo/data/db";
 
 config({
   path: ["./.env", "./.env.development", "./.env.test"],
@@ -7,7 +8,7 @@ config({
 });
 process.env.FORCE_COLOR = "1";
 
-await $`prisma db push`;
+dbMigrate();
 
 const args = [argv.watch ? "watch" : "run", "-r", "./tests"];
 

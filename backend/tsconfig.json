@@ -1,4 +1,10 @@
 {
-  "extends": "@repo/config-typescript/base.json",
-  "include": ["src", "tests", "scripts"]
+  "extends": "@repo/config-typescript/node.json",
+  "include": [
+    "src",
+    "tests",
+    "scripts",
+    "../packages/data/src/schemas",
+    "../packages/data/src/db"
+  ]
 }

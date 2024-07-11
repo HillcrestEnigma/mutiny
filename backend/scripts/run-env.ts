@@ -1,5 +1,5 @@
 import { $, echo } from "zx";
-import "../src/lib/env.ts";
+import "../src/lib/env";
 
 process.env.FORCE_COLOR = "1";
 

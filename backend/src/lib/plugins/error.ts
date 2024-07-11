@@ -1,8 +1,8 @@
 import { FastifyPluginAsync, FastifyInstance } from "fastify";
-import { ErrorResponse, ValidationErrorResponse } from "../schemas/error.ts";
+import { ErrorResponse, ValidationErrorResponse } from "@repo/data/schemas";
 import fp from "fastify-plugin";
 import { ZodError, ZodIssue } from "zod";
-import { AuthenticationError } from "./auth.ts";
+import { AuthenticationError } from "./auth";
 
 export const errorPlugin: FastifyPluginAsync = fp(
   async (app: FastifyInstance) => {

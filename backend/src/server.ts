@@ -1,4 +1,4 @@
-import { build } from "./app.ts";
+import { build } from "./app";
 
 const app = await build({
   logger: {

@@ -5,14 +5,17 @@ import {
 } from "fastify";
 import fp from "fastify-plugin";
 import fastifyAuth, { FastifyAuthFunction } from "@fastify/auth";
-import { lucia } from "../lucia.ts";
-import { User, Session } from "../schemas/auth";
-import { prisma } from "../prisma.ts";
+import { lucia } from "../lucia";
+
+import { User, Session } from "@repo/data/schemas";
+import { db } from "@repo/data/db";
+import { eq } from "@repo/data/drizzle";
+import { users } from "@repo/data/tables";
 
 declare module "fastify" {
   interface FastifyRequest {
-    session: Session | null;
     user: User | null;
+    session: Session | null;
   }
   interface FastifyInstance {
     authRequired: { onRequest: preHandlerHookHandler };
@@ -51,11 +54,9 @@ export const authPlugin: FastifyPluginAsync = fp(
         return;
       }
 
-      const user = await prisma.user.findUnique({
-        where: {
-          id: session.userId,
-        },
-        include: {
+      const user = await db.query.users.findFirst({
+        where: eq(users.id, session.userId),
+        with: {
           emails: true,
         },
       });
@@ -64,8 +65,8 @@ export const authPlugin: FastifyPluginAsync = fp(
         return;
       }
 
-      request.session = session;
       request.user = user;
+      request.session = session;
       return;
     });
 

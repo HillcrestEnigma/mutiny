@@ -20,33 +20,38 @@
         "dist/**"
       ]
     },
-    "clean": {
-      "cache": false
-    },
     "typecheck": {},
     "lint": {},
+    "formatcheck": {},
     "check": {
       "dependsOn": [
         "typecheck",
-        "lint"
+        "lint",
+        "formatcheck"
       ]
     },
     "format": {
       "dependsOn": [
-        "check"
+        "typecheck",
+        "lint"
       ],
       "cache": false
     },
-    "test:integration": {},
+    "test:integration": {
+      "cache": false
+    },
     "test": {
       "dependsOn": [
         "test:integration"
+      ],
+      "passThroughEnv": [
+        "FORCE_LOG"
       ]
     },
-    "database:migrate:new": {
+    "db:generate": {
       "cache": false
     },
-    "database:migrate:apply": {
+    "db:migrate": {
       "cache": false
     }
   }

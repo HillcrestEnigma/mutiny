@@ -1,16 +1,17 @@
 import { FastifyInstance } from "fastify";
 import {
-  SignUpPayload,
-  AuthSuccessResponse,
-  AuthErrorResponse,
-  UserDetailResponse,
-} from "../lib/schemas/auth.ts";
+  UserCreatePayload,
+  SessionResponse,
+  ErrorResponse,
+  AuthenticatedUserResponse,
+} from "@repo/data/schemas";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import * as argon2 from "@node-rs/argon2";
-import { lucia } from "../lib/lucia.ts";
-import { ErrorResponse } from "../lib/schemas/error.ts";
-import { prisma } from "../lib/prisma.ts";
+import { lucia } from "../lib/lucia";
 import { generateIdFromEntropySize } from "lucia";
+import { db } from "@repo/data/db";
+import { users, emails } from "@repo/data/tables";
+import { eq, or } from "@repo/data/drizzle";
 
 export const userRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
@@ -20,7 +21,7 @@ export const userRoutes: FastifyPluginAsyncZod = async (
     {
       schema: {
         response: {
-          200: UserDetailResponse,
+          200: AuthenticatedUserResponse,
           default: ErrorResponse,
         },
       },
@@ -39,32 +40,24 @@ export const userRoutes: FastifyPluginAsyncZod = async (
     "/user",
     {
       schema: {
-        body: SignUpPayload,
+        body: UserCreatePayload,
         response: {
-          201: AuthSuccessResponse,
-          default: AuthErrorResponse,
+          201: SessionResponse,
+          default: ErrorResponse,
         },
       },
     },
     async (request, reply) => {
-      const { username, email, password } = request.body as SignUpPayload;
+      const { username, email, password } = request.body as UserCreatePayload;
 
-      let user = await prisma.user.findFirst({
-        where: {
-          OR: [
-            { username },
-            {
-              emails: {
-                some: {
-                  address: email,
-                },
-              },
-            },
-          ],
-        },
-      });
+      const conflictingUsers = await db
+        .selectDistinct()
+        .from(users)
+        .leftJoin(emails, eq(users.id, emails.userId))
+        .where(or(eq(users.username, username), eq(emails.address, email)))
+        .limit(1);
 
-      if (user) {
+      if (conflictingUsers.length > 0) {
         reply.code(401);
         return {
           message: "User already exists.",
@@ -80,18 +73,18 @@ export const userRoutes: FastifyPluginAsyncZod = async (
         parallelism: 1,
       });
 
-      user = await prisma.user.create({
-        data: {
+      await db.transaction(async (tx) => {
+        await tx.insert(users).values({
           id: userId,
           username,
-          emails: {
-            create: {
-              address: email,
-              primary: true,
-            },
-          },
-          passwordHash: passwordHash,
-        },
+          passwordHash,
+        });
+
+        await tx.insert(emails).values({
+          userId,
+          address: email,
+          primary: true,
+        });
       });
 
       const session = await lucia.createSession(userId, {});

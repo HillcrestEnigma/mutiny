@@ -1,8 +1,4 @@
-import { beforeAll, afterAll } from "vitest";
-import { PrismaClient } from "@prisma/client";
 import { build } from "../src/app";
-
-export const prisma = new PrismaClient();
 
 export const app = await build({
   logger: {
@@ -11,19 +7,4 @@ export const app = await build({
       target: "pino-pretty",
     },
   },
-});
-
-beforeAll(async () => {
-  await prisma.$connect();
-
-  await prisma.$transaction([
-    prisma.session.deleteMany(),
-    prisma.user.deleteMany(),
-    prisma.email.deleteMany(),
-    prisma.profile.deleteMany(),
-  ]);
-});
-
-afterAll(async () => {
-  await prisma.$disconnect();
 });

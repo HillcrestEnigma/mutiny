@@ -1,15 +1,17 @@
 import { FastifyInstance } from "fastify";
 import {
-  SignInPayload,
-  AuthSuccessResponse,
-  SignOutPayload,
-  AuthErrorResponse,
-} from "../lib/schemas/auth.ts";
+  SessionCreatePayload,
+  SessionResponse,
+  SessionDeletePayload,
+  ErrorResponse,
+  GenericResponse,
+} from "@repo/data/schemas";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import * as argon2 from "@node-rs/argon2";
-import { lucia } from "../lib/lucia.ts";
-import { GenericResponse } from "../lib/schemas/response.ts";
-import { prisma } from "../lib/prisma.ts";
+import { lucia } from "../lib/lucia";
+import { db } from "@repo/data/db";
+import { eq, or } from "@repo/data/drizzle";
+import { emails, users } from "@repo/data/tables";
 
 export const sessionRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
@@ -18,35 +20,35 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
     "/session",
     {
       schema: {
-        body: SignInPayload,
+        body: SessionCreatePayload,
         response: {
-          201: AuthSuccessResponse,
-          default: AuthErrorResponse,
+          201: SessionResponse,
+          default: ErrorResponse,
         },
       },
     },
     async (request, reply) => {
-      const { usernameOrEmail, password } = request.body as SignInPayload;
+      const { usernameOrEmail, password } =
+        request.body as SessionCreatePayload;
 
-      const userNotFoundResponse: AuthErrorResponse = {
+      const userNotFoundResponse: ErrorResponse = {
         message: "Incorrect credentials.",
         error: "forbidden",
       };
 
-      const user = await prisma.user.findFirst({
-        where: {
-          OR: [
-            { username: usernameOrEmail },
-            {
-              emails: {
-                some: {
-                  address: usernameOrEmail,
-                },
-              },
-            },
-          ],
-        },
-      });
+      const user = (
+        await db
+          .selectDistinct()
+          .from(users)
+          .leftJoin(emails, eq(users.id, emails.userId))
+          .where(
+            or(
+              eq(users.username, usernameOrEmail),
+              eq(emails.address, usernameOrEmail),
+            ),
+          )
+          .limit(1)
+      )[0].users;
 
       if (!user) {
         reply.code(401);
@@ -74,15 +76,15 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
     "/session",
     {
       schema: {
-        body: SignOutPayload,
+        body: SessionDeletePayload,
         response: {
           200: GenericResponse,
-          default: AuthErrorResponse,
+          default: ErrorResponse,
         },
       },
     },
     async (request, reply) => {
-      const { sessionId } = request.body as SignOutPayload;
+      const { sessionId } = request.body as SessionDeletePayload;
 
       await lucia.invalidateSession(sessionId);
 

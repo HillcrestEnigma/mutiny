@@ -1,0 +1,7 @@
+{
+  "extends": "@repo/config-typescript/node.json",
+  "compilerOptions": {
+    "outDir": "./dist/src"
+  },
+  "include": ["src", "drizzle.config.ts"]
+}

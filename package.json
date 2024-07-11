@@ -18,6 +18,7 @@
     "@repo/config-typescript": "workspace:*",
     "@types/node": "^20.14.10",
     "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
     "tsx": "^4.16.2",
     "turbo": "^2.0.6",
     "zx": "^8.1.4"

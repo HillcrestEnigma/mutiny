@@ -1,7 +1,11 @@
 import { Lucia } from "lucia";
-import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
-import { User } from "./schemas/auth";
-import { prisma } from "./prisma.ts";
+import { User } from "@repo/data/schemas";
+
+import { DrizzleSQLiteAdapter } from "@lucia-auth/adapter-drizzle";
+import { db } from "@repo/data/db";
+import { sessions, users } from "@repo/data/tables";
+
+export const adapter = new DrizzleSQLiteAdapter(db, sessions, users);
 
 declare module "lucia" {
   interface Register {
@@ -9,8 +13,6 @@ declare module "lucia" {
     DatabaseUserAttributes: Omit<User, "emails">;
   }
 }
-
-const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
 export const lucia = new Lucia(adapter, {
   getUserAttributes: async (attrs) => {

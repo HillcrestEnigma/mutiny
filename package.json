@@ -10,7 +10,7 @@
   "packageManager": "pnpm@9.4.0",
   "prettier": "@repo/config-prettier",
   "scripts": {
-    "setup": "husky"
+    "setup": "zx ./scripts/project-setup.mjs"
   },
   "devDependencies": {
     "@repo/config-eslint": "workspace:*",

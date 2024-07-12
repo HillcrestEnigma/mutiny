@@ -1,5 +1,5 @@
 import { FastifyPluginAsync, FastifyInstance } from "fastify";
-import { ErrorResponse, ValidationErrorResponse } from "@repo/data/schemas";
+import { ErrorResponse, ValidationErrorResponse } from "@repo/schema";
 import fp from "fastify-plugin";
 import { ZodError, ZodIssue } from "zod";
 import { AuthenticationError } from "./auth";

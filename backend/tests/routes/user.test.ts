@@ -4,8 +4,8 @@ import {
   AuthenticatedUserResponse,
   ErrorResponse,
   ValidationErrorResponse,
-} from "@repo/data/schemas";
-import { app } from "./setup";
+} from "@repo/schema";
+import { app } from "../setup";
 
 describe("Sign Up", async () => {
   test("Signup a new user", async () => {

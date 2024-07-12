@@ -1,6 +1,6 @@
 import { beforeEach, beforeAll, describe, expect, test } from "vitest";
-import { SessionResponse, ValidationErrorResponse } from "@repo/data/schemas";
-import { app } from "./setup";
+import { SessionResponse, ValidationErrorResponse } from "@repo/schema";
+import { app } from "../setup";
 
 describe("Sign In", async () => {
   beforeAll(async () => {

@@ -5,6 +5,7 @@
     "tests",
     "scripts",
     "../packages/data/src/schemas",
-    "../packages/data/src/db"
+    "../packages/data/src/db",
+    "../scripts/project-setup.mjs"
   ]
 }

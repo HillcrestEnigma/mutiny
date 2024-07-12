@@ -38,20 +38,15 @@
       "cache": false
     },
     "test:integration": {
-      "cache": false
+      "cache": false,
+      "passThroughEnv": [
+        "FORCE_LOG"
+      ]
     },
     "test": {
       "dependsOn": [
         "test:integration"
       ],
-      "passThroughEnv": [
-        "FORCE_LOG"
-      ]
-    },
-    "db:generate": {
-      "cache": false
-    },
-    "db:migrate": {
       "cache": false
     }
   }

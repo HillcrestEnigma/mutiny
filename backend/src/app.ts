@@ -9,12 +9,14 @@ import { infoRoutes } from "./routes/info";
 import { userRoutes } from "./routes/user";
 import { sessionRoutes } from "./routes/session";
 import { authPlugin } from "./lib/plugins/auth";
+import { setupPlugin } from "./lib/plugins/setup";
 
 export async function build(opts: FastifyServerOptions = {}) {
   const app = Fastify(opts).withTypeProvider<ZodTypeProvider>();
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
 
+  await app.register(setupPlugin);
   await app.register(errorPlugin);
   await app.register(authPlugin);
 

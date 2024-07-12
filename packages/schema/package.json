@@ -1,0 +1,30 @@
+{
+  "name": "@repo/schema",
+  "type": "module",
+  "private": true,
+  "prettier": "@repo/config-prettier",
+  "scripts": {
+    "build": "swc ./src --out-dir ./dist",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "formatcheck": "prettier . --check",
+    "format": "prettier . --write"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@repo/config-eslint": "workspace:*",
+    "@repo/config-prettier": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "@swc/cli": "^0.4.0",
+    "@swc/core": "1.6.13",
+    "typescript": "^5.5.3"
+  }
+}

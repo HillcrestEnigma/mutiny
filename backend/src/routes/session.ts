@@ -5,13 +5,11 @@ import {
   SessionDeletePayload,
   ErrorResponse,
   GenericResponse,
-} from "@repo/data/schemas";
+} from "@repo/schema";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import * as argon2 from "@node-rs/argon2";
 import { lucia } from "../lib/lucia";
-import { db } from "@repo/data/db";
-import { eq, or } from "@repo/data/drizzle";
-import { emails, users } from "@repo/data/tables";
+import { prisma } from "@repo/db";
 
 export const sessionRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
@@ -36,19 +34,20 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
         error: "forbidden",
       };
 
-      const user = (
-        await db
-          .selectDistinct()
-          .from(users)
-          .leftJoin(emails, eq(users.id, emails.userId))
-          .where(
-            or(
-              eq(users.username, usernameOrEmail),
-              eq(emails.address, usernameOrEmail),
-            ),
-          )
-          .limit(1)
-      )[0].users;
+      const user = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { username: usernameOrEmail },
+            {
+              emails: {
+                some: {
+                  address: usernameOrEmail,
+                },
+              },
+            },
+          ],
+        },
+      });
 
       if (!user) {
         reply.code(401);

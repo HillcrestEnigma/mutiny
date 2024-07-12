@@ -1,6 +1,6 @@
 node_modules
 dist
 .turbo
-.env.*
+backend/.env
 *.sqlite3
 *.sqlite3-journal

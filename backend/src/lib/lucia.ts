@@ -1,11 +1,9 @@
 import { Lucia } from "lucia";
-import { User } from "@repo/data/schemas";
+import { User } from "@repo/schema";
+import { prisma } from "@repo/db";
+import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
 
-import { DrizzleSQLiteAdapter } from "@lucia-auth/adapter-drizzle";
-import { db } from "@repo/data/db";
-import { sessions, users } from "@repo/data/tables";
-
-export const adapter = new DrizzleSQLiteAdapter(db, sessions, users);
+const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
 declare module "lucia" {
   interface Register {

@@ -7,10 +7,8 @@ import fp from "fastify-plugin";
 import fastifyAuth, { FastifyAuthFunction } from "@fastify/auth";
 import { lucia } from "../lucia";
 
-import { User, Session } from "@repo/data/schemas";
-import { db } from "@repo/data/db";
-import { eq } from "@repo/data/drizzle";
-import { users } from "@repo/data/tables";
+import { User, Session } from "@repo/schema";
+import { prisma } from "@repo/db";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -54,9 +52,11 @@ export const authPlugin: FastifyPluginAsync = fp(
         return;
       }
 
-      const user = await db.query.users.findFirst({
-        where: eq(users.id, session.userId),
-        with: {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: session.userId,
+        },
+        include: {
           emails: true,
         },
       });

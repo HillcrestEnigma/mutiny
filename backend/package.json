@@ -10,26 +10,25 @@
   "packageManager": "pnpm@9.4.0",
   "prettier": "@repo/config-prettier",
   "scripts": {
-    "setup": "tsx ./scripts/project-setup.ts",
-    "watch": "tsx ./scripts/run-env.ts -- tsx watch ./src/server.ts",
+    "watch": "dotenvx run -- tsx watch ./src/server.ts",
     "build": "swc ./src -d dist",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "formatcheck": "prettier . --check",
     "format": "prettier . --write",
-    "test:integration": "tsx ./scripts/test-integration.ts",
-    "database:migrate:new": "tsx ./scripts/run-env.ts -- prisma migrate dev",
-    "database:migrate:apply": "tsx ./scripts/run-env.ts -- prisma migrate deploy"
+    "test:integration": "tsx ./scripts/test-integration.ts"
   },
   "dependencies": {
     "@fastify/auth": "^4.6.1",
+    "@lucia-auth/adapter-drizzle": "^1.0.7",
+    "@lucia-auth/adapter-prisma": "^4.0.1",
     "@node-rs/argon2": "^1.8.3",
+    "@repo/db": "workspace:*",
+    "@repo/schema": "workspace:*",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
     "fastify-type-provider-zod": "^2.0.0",
-    "@repo/data": "workspace:*",
     "lucia": "^3.2.0",
-    "@lucia-auth/adapter-drizzle": "^1.0.7",
     "zod": "^3.23.8"
   },
   "devDependencies": {

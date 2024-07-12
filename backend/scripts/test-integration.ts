@@ -1,14 +1,16 @@
-import { $, argv } from "zx";
+import { $, argv, tmpfile, cd } from "zx";
 import { config } from "@dotenvx/dotenvx";
-import { dbMigrate } from "@repo/data/db";
 
-config({
-  path: ["./.env", "./.env.development", "./.env.test"],
-  overload: true,
-});
+config();
+
+const dbFile = tmpfile();
+process.env.DATABASE_URL = `file:${dbFile}`;
+process.env.NODE_ENV = "test";
 process.env.FORCE_COLOR = "1";
 
-dbMigrate();
+cd("../packages/db");
+await $`pnpm exec prisma db push`;
+cd("../../backend");
 
 const args = [argv.watch ? "watch" : "run", "-r", "./tests"];
 

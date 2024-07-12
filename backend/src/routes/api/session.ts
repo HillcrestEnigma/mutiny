@@ -5,15 +5,35 @@ import {
   SessionDeletePayload,
   ErrorResponse,
   GenericResponse,
+  AuthenticatedSessionResponse,
 } from "@repo/schema";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import * as argon2 from "@node-rs/argon2";
-import { lucia } from "../lib/lucia";
+import { lucia } from "../../lib/lucia";
 import { prisma } from "@repo/db";
+import { verifyPassword } from "../../lib/utils/auth";
 
 export const sessionRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
 ) => {
+  app.get(
+    "/session",
+    {
+      schema: {
+        response: {
+          200: AuthenticatedSessionResponse,
+          default: ErrorResponse,
+        },
+      },
+      ...app.authRequired,
+    },
+    async (request) => {
+      return {
+        message: "Details on authenticated session.",
+        session: request.session,
+      };
+    },
+  );
+
   app.post(
     "/session",
     {
@@ -54,7 +74,7 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
         return userNotFoundResponse;
       }
 
-      const validPassword = await argon2.verify(user.passwordHash, password);
+      const validPassword = await verifyPassword(user.passwordHash, password);
 
       if (!validPassword) {
         reply.code(401);

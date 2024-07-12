@@ -84,12 +84,6 @@ importers:
       '@repo/config-typescript':
         specifier: workspace:*
         version: link:../configs/typescript
-      '@swc/cli':
-        specifier: ^0.4.0
-        version: 0.4.0(@swc/core@1.6.13)
-      '@swc/core':
-        specifier: 1.6.13
-        version: 1.6.13
       '@types/node':
         specifier: ^20.14.10
         version: 20.14.10

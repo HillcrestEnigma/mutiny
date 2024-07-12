@@ -1,27 +1,19 @@
-import { build } from "../src/app";
-import { beforeAll, afterAll } from "vitest";
 import { prisma } from "@repo/db";
+import type { GlobalSetupContext } from "vitest/node";
+import { scenario } from "./scenario";
 
-export const app = await build({
-  logger: {
-    level: "error",
-    transport: {
-      target: "pino-pretty",
-    },
-  },
-});
+declare module "vitest" {
+  export interface ProvidedContext {
+    scenario: typeof scenario;
+  }
+}
 
-beforeAll(async () => {
+export const setup = async ({ provide }: GlobalSetupContext) => {
   await prisma.$connect();
 
-  await prisma.$transaction([
-    prisma.session.deleteMany(),
-    prisma.user.deleteMany(),
-    prisma.email.deleteMany(),
-    prisma.profile.deleteMany(),
-  ]);
-});
+  provide("scenario", scenario);
+};
 
-afterAll(async () => {
+export const tearDown = async () => {
   await prisma.$disconnect();
-});
+};

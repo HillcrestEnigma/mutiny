@@ -6,10 +6,9 @@ import {
   AuthenticatedUserResponse,
 } from "@repo/schema";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import * as argon2 from "@node-rs/argon2";
-import { lucia } from "../lib/lucia";
-import { generateIdFromEntropySize } from "lucia";
+import { lucia } from "../../lib/lucia";
 import { prisma } from "@repo/db";
+import { generateUserId, hashPassword } from "../../lib/utils/auth";
 
 export const userRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
@@ -27,8 +26,7 @@ export const userRoutes: FastifyPluginAsyncZod = async (
     },
     async (request) => {
       return {
-        message: `Details on authenticated user ${request.user?.username}`,
-        session: request.session,
+        message: `Details on authenticated user "${request.user?.username}".`,
         user: request.user,
       };
     },
@@ -71,13 +69,8 @@ export const userRoutes: FastifyPluginAsyncZod = async (
         };
       }
 
-      const userId = generateIdFromEntropySize(10);
-      const passwordHash = await argon2.hash(password, {
-        memoryCost: 19456,
-        timeCost: 2,
-        outputLen: 32,
-        parallelism: 1,
-      });
+      const userId = generateUserId();
+      const passwordHash = await hashPassword(password);
 
       await prisma.user.create({
         data: {
@@ -89,7 +82,7 @@ export const userRoutes: FastifyPluginAsyncZod = async (
               primary: true,
             },
           },
-          passwordHash: passwordHash,
+          passwordHash,
         },
       });
 

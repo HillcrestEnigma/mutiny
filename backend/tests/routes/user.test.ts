@@ -1,17 +1,72 @@
-import { beforeAll, describe, expect, test } from "vitest";
+import { describe, expect, test, inject } from "vitest";
 import {
   SessionResponse,
   AuthenticatedUserResponse,
   ErrorResponse,
   ValidationErrorResponse,
 } from "@repo/schema";
-import { app } from "../setup";
+import { app } from "../build";
+
+const scenario = inject("scenario");
+
+describe("Authentication", async () => {
+  test("Logged in user can see their user details", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/user",
+      headers: {
+        Authorization: `Bearer ${scenario.users[0].sessions[0].id}`,
+      },
+    });
+
+    expect(response.statusCode).toBe(200);
+
+    const result = response.json() as AuthenticatedUserResponse;
+
+    expect(result.user.username).toBe(scenario.users[0].username);
+    expect(result.user).not.toHaveProperty("passwordHash");
+    expect(result.user.emails).toHaveLength(1);
+    expect(result.user.emails[0].address).toBe(
+      scenario.users[0].emails[0].address,
+    );
+    expect(result.user.emails[0].primary).toBe(true);
+  });
+
+  test("Anonymous users can't see their user details with invalid session id", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/user",
+      headers: {
+        Authorization: "Bearer invalid",
+      },
+    });
+
+    expect(response.statusCode).toBe(401);
+
+    const result = response.json() as ErrorResponse;
+
+    expect(result.error).toBe("unauthorized");
+  });
+
+  test("Anonymous users can't see their user details with no Authentication header", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/user",
+    });
+
+    expect(response.statusCode).toBe(401);
+
+    const result = response.json() as ErrorResponse;
+
+    expect(result.error).toBe("unauthorized");
+  });
+});
 
 describe("Sign Up", async () => {
   test("Signup a new user", async () => {
     const response = await app.inject({
       method: "POST",
-      url: "/user",
+      url: "/api/user",
       payload: {
         username: "testuser",
         email: "testuser@example.com",
@@ -29,7 +84,7 @@ describe("Sign Up", async () => {
   test("Reject signup with bad username", async () => {
     const response = await app.inject({
       method: "POST",
-      url: "/user",
+      url: "/api/user",
       payload: {
         username: "_Testuser@#^$%&^$",
         email: "anemail@website.com",
@@ -48,7 +103,7 @@ describe("Sign Up", async () => {
   test("Reject signup with bad email", async () => {
     const response = await app.inject({
       method: "POST",
-      url: "/user",
+      url: "/api/user",
       payload: {
         username: "goodusername",
         email: "notanemail",
@@ -67,7 +122,7 @@ describe("Sign Up", async () => {
   test("Reject signup with bad password", async () => {
     const response = await app.inject({
       method: "POST",
-      url: "/user",
+      url: "/api/user",
       payload: {
         username: "goodusername",
         email: "goodemail@goodwebsite.ext",
@@ -86,7 +141,7 @@ describe("Sign Up", async () => {
   test("Reject signup with existing username and email", async () => {
     let response = await app.inject({
       method: "POST",
-      url: "/user",
+      url: "/api/user",
       payload: {
         username: "sameusername",
         email: "sameemail@example.com",
@@ -98,7 +153,7 @@ describe("Sign Up", async () => {
 
     response = await app.inject({
       method: "POST",
-      url: "/user",
+      url: "/api/user",
       payload: {
         username: "sameusername",
         email: "anotheremail@example.com",
@@ -110,7 +165,7 @@ describe("Sign Up", async () => {
 
     response = await app.inject({
       method: "POST",
-      url: "/user",
+      url: "/api/user",
       payload: {
         username: "anotherusername",
         email: "sameemail@example.com",
@@ -119,83 +174,5 @@ describe("Sign Up", async () => {
     });
 
     expect(response.statusCode).toBe(401);
-  });
-});
-
-describe("Authentication", async () => {
-  let sessionId: string;
-
-  beforeAll(async () => {
-    await app.inject({
-      method: "POST",
-      url: "/user",
-      payload: {
-        username: "testuser_auth",
-        email: "testuser_auth@example.com",
-        password: "password",
-      },
-    });
-
-    const response = await app.inject({
-      method: "POST",
-      url: "/session",
-      payload: {
-        usernameOrEmail: "testuser_auth@example.com",
-        password: "password",
-      },
-    });
-
-    const result = response.json() as SessionResponse;
-
-    sessionId = result.sessionId;
-  });
-
-  test("Logged in user can see their user details", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: "/user",
-      headers: {
-        Authorization: `Bearer ${sessionId}`,
-      },
-    });
-
-    expect(response.statusCode).toBe(200);
-
-    const result = response.json() as AuthenticatedUserResponse;
-
-    expect(result.session.id).toBe(sessionId);
-    expect(result.user.username).toBe("testuser_auth");
-    expect(result.user.emails).toHaveLength(1);
-    expect(result.user.emails[0].address).toBe("testuser_auth@example.com");
-    expect(result.user.emails[0].primary).toBe(true);
-  });
-
-  test("Anonymous users can't see their user details with invalid session id", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: "/user",
-      headers: {
-        Authorization: "Bearer invalid",
-      },
-    });
-
-    expect(response.statusCode).toBe(401);
-
-    const result = response.json() as ErrorResponse;
-
-    expect(result.error).toBe("unauthorized");
-  });
-
-  test("Anonymous users can't see their user details with no Authentication header", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: "/user",
-    });
-
-    expect(response.statusCode).toBe(401);
-
-    const result = response.json() as ErrorResponse;
-
-    expect(result.error).toBe("unauthorized");
   });
 });

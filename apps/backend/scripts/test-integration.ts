@@ -8,9 +8,9 @@ process.env.DATABASE_URL = `file:${dbFile}`;
 process.env.NODE_ENV = "test";
 process.env.FORCE_COLOR = "1";
 
-cd("../packages/db");
+cd("../../packages/db");
 await $`pnpm exec prisma db push`;
-cd("../../backend");
+cd("../../apps/backend");
 
 const args = [argv.watch ? "watch" : "run", "-r", "./tests"];
 

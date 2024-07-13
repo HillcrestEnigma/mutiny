@@ -40,7 +40,8 @@
     "test:integration": {
       "passThroughEnv": [
         "FORCE_LOG"
-      ]
+      ],
+      "cache": false
     },
     "test": {
       "dependsOn": [

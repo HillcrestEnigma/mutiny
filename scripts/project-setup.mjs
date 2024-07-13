@@ -14,19 +14,20 @@ if (!existsSync("./db.sqlite3")) {
   echo(`Generated SQLite3 database file.`);
 }
 
-if (!existsSync("./backend/.env")) {
+if (!existsSync("./apps/backend/.env")) {
   modifiedProject = true;
 
-  cd("./backend");
+  cd("./apps/backend");
   await copyFile("./.env.example", "./.env", constants.COPYFILE_EXCL);
   await $`pnpm exec dotenvx set NODE_ENV "development" -f ./.env --plain`;
   await $`pnpm exec dotenvx set SERVER_URL "http://localhost:5000" -f ./.env --plain`;
-  cd("..");
+  cd("../..");
 
   echo(`Generated backend/.env file.`);
 }
 
 await $`husky`;
+await $`turbo run build`;
 
 if (modifiedProject) {
   echo(`Done setting up project.

@@ -6,9 +6,9 @@ import {
 import fp from "fastify-plugin";
 import fastifyAuth, { FastifyAuthFunction } from "@fastify/auth";
 import { lucia } from "../lucia";
-
 import { User, Session } from "@repo/schema";
 import { prisma } from "@repo/db";
+import { UnauthorizedError } from "../errors";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -17,14 +17,6 @@ declare module "fastify" {
   }
   interface FastifyInstance {
     authRequired: { onRequest: preHandlerHookHandler };
-  }
-}
-
-export class AuthenticationError extends Error {
-  constructor(message?: string, options?: ErrorOptions) {
-    super(message, options);
-
-    this.name = "AuthenticationError";
   }
 }
 
@@ -72,7 +64,7 @@ export const authPlugin: FastifyPluginAsync = fp(
 
     const verifyAuthenticated: FastifyAuthFunction = async (request) => {
       if (!request.session || !request.user) {
-        throw new AuthenticationError("User not authenticated");
+        throw new UnauthorizedError();
       }
     };
 

@@ -19,11 +19,13 @@
   },
   "dependencies": {
     "@fastify/auth": "^4.6.1",
+    "@fastify/swagger": "^8.14.0",
     "@lucia-auth/adapter-drizzle": "^1.0.7",
     "@lucia-auth/adapter-prisma": "^4.0.1",
     "@node-rs/argon2": "^1.8.3",
     "@repo/db": "workspace:*",
     "@repo/schema": "workspace:*",
+    "@scalar/fastify-api-reference": "^1.24.41",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
     "fastify-type-provider-zod": "^2.0.0",

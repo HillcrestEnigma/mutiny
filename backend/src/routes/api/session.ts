@@ -3,14 +3,17 @@ import {
   SessionCreatePayload,
   SessionResponse,
   SessionDeletePayload,
-  ErrorResponse,
   GenericResponse,
   AuthenticatedSessionResponse,
+  ValidationErrorResponse,
+  GenericErrorResponse,
+  UnauthorizedErrorResponse,
 } from "@repo/schema";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { lucia } from "../../lib/lucia";
 import { prisma } from "@repo/db";
 import { verifyPassword } from "../../lib/utils/auth";
+import { UnauthorizedError } from "../../lib/errors";
 
 export const sessionRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
@@ -19,16 +22,25 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
     "/session",
     {
       schema: {
+        summary: "Get Authenticated Session",
+        description: "Get details on the authenticated session.",
+        tags: ["session"],
+        security: [
+          {
+            session: [],
+          },
+        ],
         response: {
           200: AuthenticatedSessionResponse,
-          default: ErrorResponse,
+          401: UnauthorizedErrorResponse,
+          422: ValidationErrorResponse,
+          default: GenericErrorResponse,
         },
       },
       ...app.authRequired,
     },
     async (request) => {
       return {
-        message: "Details on authenticated session.",
         session: request.session,
       };
     },
@@ -38,21 +50,20 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
     "/session",
     {
       schema: {
+        summary: "Create Session",
+        description: "Sign in an existing user.",
+        tags: ["session"],
         body: SessionCreatePayload,
         response: {
           201: SessionResponse,
-          default: ErrorResponse,
+          422: ValidationErrorResponse,
+          default: GenericErrorResponse,
         },
       },
     },
     async (request, reply) => {
       const { usernameOrEmail, password } =
         request.body as SessionCreatePayload;
-
-      const userNotFoundResponse: ErrorResponse = {
-        message: "Incorrect credentials.",
-        error: "forbidden",
-      };
 
       const user = await prisma.user.findFirst({
         where: {
@@ -70,22 +81,19 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
       });
 
       if (!user) {
-        reply.code(401);
-        return userNotFoundResponse;
+        throw new UnauthorizedError("Invalid credentials.");
       }
 
       const validPassword = await verifyPassword(user.passwordHash, password);
 
       if (!validPassword) {
-        reply.code(401);
-        return userNotFoundResponse;
+        throw new UnauthorizedError("Invalid credentials.");
       }
 
       const session = await lucia.createSession(user.id, {});
 
       reply.code(201);
       return {
-        message: "Successfully created session.",
         sessionId: session.id,
       };
     },
@@ -95,10 +103,14 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
     "/session",
     {
       schema: {
+        summary: "Delete Session",
+        description: "Sign out a logged-in user.",
+        tags: ["session"],
         body: SessionDeletePayload,
         response: {
           200: GenericResponse,
-          default: ErrorResponse,
+          422: ValidationErrorResponse,
+          default: GenericErrorResponse,
         },
       },
     },
@@ -108,9 +120,7 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
       await lucia.invalidateSession(sessionId);
 
       reply.code(200);
-      return {
-        message: "Successfully invalidated session.",
-      };
+      return {};
     },
   );
 };

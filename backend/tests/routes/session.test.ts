@@ -110,7 +110,7 @@ describe("Sign In", async () => {
 
     const result = response.json() as ValidationErrorResponse;
 
-    expect(result.error).toBe("forbidden");
+    expect(result.error).toBe("unauthorized");
   });
 
   test("Reject sign in with wrong password", async () => {
@@ -127,7 +127,7 @@ describe("Sign In", async () => {
 
     const result = response.json() as ValidationErrorResponse;
 
-    expect(result.error).toBe("forbidden");
+    expect(result.error).toBe("unauthorized");
   });
 });
 
@@ -184,7 +184,7 @@ describe("Sign Out", async () => {
       },
     });
 
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(422);
 
     const result = response.json() as ValidationErrorResponse;
 

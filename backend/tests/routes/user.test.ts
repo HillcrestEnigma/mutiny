@@ -4,6 +4,7 @@ import {
   AuthenticatedUserResponse,
   ErrorResponse,
   ValidationErrorResponse,
+  ConflictErrorResponse,
 } from "@repo/schema";
 import { app } from "../build";
 
@@ -92,7 +93,7 @@ describe("Sign Up", async () => {
       },
     });
 
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(422);
 
     const result = response.json() as ValidationErrorResponse;
 
@@ -111,7 +112,7 @@ describe("Sign Up", async () => {
       },
     });
 
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(422);
 
     const result = response.json() as ValidationErrorResponse;
 
@@ -130,7 +131,7 @@ describe("Sign Up", async () => {
       },
     });
 
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(422);
 
     const result = response.json() as ValidationErrorResponse;
 
@@ -161,7 +162,11 @@ describe("Sign Up", async () => {
       },
     });
 
-    expect(response.statusCode).toBe(401);
+    expect(response.statusCode).toBe(409);
+
+    let result = response.json() as ConflictErrorResponse;
+
+    expect(result.resource).toBe("username");
 
     response = await app.inject({
       method: "POST",
@@ -173,6 +178,10 @@ describe("Sign Up", async () => {
       },
     });
 
-    expect(response.statusCode).toBe(401);
+    expect(response.statusCode).toBe(409);
+
+    result = response.json() as ConflictErrorResponse;
+
+    expect(result.resource).toBe("email");
   });
 });

@@ -1,3 +1,12 @@
+import packageJSON from "../../package.json";
+
 export const config = {
-  version: process.env.npm_package_version ?? "0.0.0",
+  info: {
+    title: packageJSON.name,
+    description: packageJSON.description,
+    version: packageJSON.version,
+  },
+  endpoints: {
+    api: process.env.SERVER_URL ?? "https://example.com/api",
+  },
 };

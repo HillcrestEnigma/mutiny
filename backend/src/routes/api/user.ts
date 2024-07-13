@@ -2,13 +2,17 @@ import { FastifyInstance } from "fastify";
 import {
   UserCreatePayload,
   SessionResponse,
-  ErrorResponse,
+  ValidationErrorResponse,
   AuthenticatedUserResponse,
+  GenericErrorResponse,
+  ConflictErrorResponse,
+  UnauthorizedErrorResponse,
 } from "@repo/schema";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { lucia } from "../../lib/lucia";
 import { prisma } from "@repo/db";
 import { generateUserId, hashPassword } from "../../lib/utils/auth";
+import { ConflictError } from "../../lib/errors";
 
 export const userRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
@@ -17,16 +21,24 @@ export const userRoutes: FastifyPluginAsyncZod = async (
     "/user",
     {
       schema: {
+        summary: "Get Authenticated User",
+        description: "Get details on the authenticated user.",
+        tags: ["user"],
+        security: [
+          {
+            session: [],
+          },
+        ],
         response: {
           200: AuthenticatedUserResponse,
-          default: ErrorResponse,
+          422: ValidationErrorResponse,
+          default: GenericErrorResponse,
         },
       },
       ...app.authRequired,
     },
     async (request) => {
       return {
-        message: `Details on authenticated user "${request.user?.username}".`,
         user: request.user,
       };
     },
@@ -36,10 +48,16 @@ export const userRoutes: FastifyPluginAsyncZod = async (
     "/user",
     {
       schema: {
+        summary: "Create User",
+        description: "Sign up a new user.",
+        tags: ["user"],
         body: UserCreatePayload,
         response: {
           201: SessionResponse,
-          default: ErrorResponse,
+          401: UnauthorizedErrorResponse,
+          409: ConflictErrorResponse,
+          422: ValidationErrorResponse,
+          default: GenericErrorResponse,
         },
       },
     },
@@ -62,11 +80,15 @@ export const userRoutes: FastifyPluginAsyncZod = async (
       });
 
       if (user) {
-        reply.code(401);
-        return {
-          message: "User already exists.",
-          error: "forbidden",
-        };
+        let resource;
+
+        if (user.username == username) {
+          resource = "username";
+        } else {
+          resource = "email";
+        }
+
+        throw new ConflictError(resource);
       }
 
       const userId = generateUserId();
@@ -91,7 +113,6 @@ export const userRoutes: FastifyPluginAsyncZod = async (
       reply.code(201);
       return {
         sessionId: session.id,
-        message: "Successfully created user.",
       };
     },
   );

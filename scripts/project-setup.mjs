@@ -7,9 +7,9 @@ let modifiedProject = false;
 if (!existsSync("./db.sqlite3")) {
   modifiedProject = true;
 
-  cd("./packages/db")
+  cd("./packages/db");
   await $`pnpm exec prisma db push`;
-  cd("../..")
+  cd("../..");
 
   echo(`Generated SQLite3 database file.`);
 }
@@ -17,14 +17,11 @@ if (!existsSync("./db.sqlite3")) {
 if (!existsSync("./backend/.env")) {
   modifiedProject = true;
 
-  cd("./backend")
-  await copyFile(
-    "./.env.example",
-    "./.env",
-    constants.COPYFILE_EXCL,
-  );
+  cd("./backend");
+  await copyFile("./.env.example", "./.env", constants.COPYFILE_EXCL);
   await $`pnpm exec dotenvx set NODE_ENV "development" -f ./.env --plain`;
-  cd("..")
+  await $`pnpm exec dotenvx set SERVER_URL "http://localhost:5000" -f ./.env --plain`;
+  cd("..");
 
   echo(`Generated backend/.env file.`);
 }

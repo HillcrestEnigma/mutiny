@@ -8,6 +8,7 @@ import { errorPlugin } from "./lib/plugins/error";
 import { apiRoutes } from "./routes/api";
 import { authPlugin } from "./lib/plugins/auth";
 import { setupPlugin } from "./lib/plugins/setup";
+import { openapiPlugin } from "./lib/plugins/openapi";
 
 export async function build(opts: FastifyServerOptions = {}) {
   const app = Fastify(opts).withTypeProvider<ZodTypeProvider>();
@@ -17,6 +18,7 @@ export async function build(opts: FastifyServerOptions = {}) {
   await app.register(setupPlugin);
   await app.register(errorPlugin);
   await app.register(authPlugin);
+  await app.register(openapiPlugin);
 
   await app.register(apiRoutes, {
     prefix: "/api",

@@ -7,15 +7,14 @@
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "main": "src/server.js",
-  "packageManager": "pnpm@9.4.0",
   "prettier": "@repo/config-prettier",
   "scripts": {
-    "watch": "dotenvx run -- tsx watch ./src/server.ts",
+    "start": "dotenvx run -- tsx watch ./src/server.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "formatcheck": "prettier . --check",
     "format": "prettier . --write",
-    "test:integration": "tsx ./scripts/test-integration.ts"
+    "test": "tsx ./scripts/test-integration.ts"
   },
   "dependencies": {
     "@fastify/auth": "^4.6.1",

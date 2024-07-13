@@ -1,4 +1,4 @@
-import nodeConfig from "@repo/config-eslint/node.js";
+import nodeConfig from "@repo/config-eslint/node";
 
 export default [
   ...nodeConfig,

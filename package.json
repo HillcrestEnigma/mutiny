@@ -8,6 +8,14 @@
   "private": true,
   "packageManager": "pnpm@9.4.0",
   "prettier": "@repo/config-prettier",
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@babel/*",
+        "expo-modules-*"
+      ]
+    }
+  },
   "scripts": {
     "setup": "zx ./scripts/project-setup.mjs"
   },

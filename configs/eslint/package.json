@@ -2,6 +2,10 @@
   "name": "@repo/config-eslint",
   "type": "module",
   "private": true,
+  "exports": {
+    ".": "./base.js",
+    "./node": "./node.js"
+  },
   "devDependencies": {
     "@eslint/js": "^9.6.0",
     "eslint-config-prettier": "^9.1.0",

@@ -1,16 +1,14 @@
-import { FastifyPluginAsync, FastifyInstance } from "fastify";
+import { type FastifyPluginAsync, type FastifyInstance } from "fastify";
 import { ErrorResponse } from "@repo/schema";
 import fp from "fastify-plugin";
-import { ZodError, ZodIssue } from "zod";
+import { ZodError, type ZodIssue } from "zod";
 import { MutinyError } from "../errors";
+import { config } from "../config";
 
 export const errorPlugin: FastifyPluginAsync = fp(
   async (app: FastifyInstance) => {
     app.setErrorHandler(async (error, _, reply) => {
-      if (
-        process.env.NODE_ENV === "development" ||
-        process.env.FORCE_LOG === "1"
-      ) {
+      if (config.env.development || config.flags.forceLog) {
         app.log.error(error);
       }
       if (error instanceof ZodError) {

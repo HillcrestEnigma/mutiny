@@ -9,19 +9,18 @@
   "main": "src/server.js",
   "prettier": "@repo/config-prettier",
   "scripts": {
-    "start": "dotenvx run -- tsx watch ./src/server.ts",
+    "start": "dotenvx run -- bun run --hot ./src/server.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "formatcheck": "prettier . --check",
     "format": "prettier . --write",
-    "test": "tsx ./scripts/test-integration.ts"
+    "test": "bun run ./scripts/test-integration.ts"
   },
   "dependencies": {
     "@fastify/auth": "^4.6.1",
     "@fastify/swagger": "^8.14.0",
     "@lucia-auth/adapter-drizzle": "^1.0.7",
     "@lucia-auth/adapter-prisma": "^4.0.1",
-    "@node-rs/argon2": "^1.8.3",
     "@repo/db": "workspace:*",
     "@repo/schema": "workspace:*",
     "@scalar/fastify-api-reference": "^1.24.41",
@@ -29,18 +28,18 @@
     "fastify-plugin": "^4.5.1",
     "fastify-type-provider-zod": "^2.0.0",
     "lucia": "^3.2.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "@node-rs/argon2": "^1.8.3"
   },
   "devDependencies": {
+    "@types/bun": "^1.1.6",
     "@dotenvx/dotenvx": "^1.5.0",
     "@repo/config-eslint": "workspace:*",
     "@repo/config-prettier": "workspace:*",
     "@repo/config-typescript": "workspace:*",
-    "@types/node": "^20.14.10",
     "eslint": "~9.6.0",
     "pino-pretty": "^11.2.1",
     "prettier": "3.3.2",
-    "tsx": "^4.16.2",
     "typescript": "^5.5.3",
     "vitest": "^2.0.1",
     "zx": "^8.1.4"

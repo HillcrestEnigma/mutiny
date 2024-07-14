@@ -1,8 +1,4 @@
 {
-  "extends": "@repo/config-typescript/node.json",
-  "compilerOptions": {
-    "noEmit": true,
-    "outDir": "./dist/src"
-  },
+  "extends": "@repo/config-typescript",
   "include": ["src"]
 }

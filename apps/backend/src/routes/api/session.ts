@@ -1,4 +1,4 @@
-import { FastifyInstance } from "fastify";
+import { type FastifyInstance } from "fastify";
 import {
   SessionCreatePayload,
   SessionResponse,
@@ -9,7 +9,7 @@ import {
   GenericErrorResponse,
   UnauthorizedErrorResponse,
 } from "@repo/schema";
-import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+import { type FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { lucia } from "../../lib/lucia";
 import { prisma } from "@repo/db";
 import { verifyPassword } from "../../lib/utils/auth";

@@ -1,4 +1,7 @@
 {
   "name": "@repo/config-typescript",
-  "private": true
+  "private": true,
+  "exports": {
+    ".": "./base.json"
+  }
 }

@@ -1,8 +1,8 @@
-import Fastify, { FastifyServerOptions } from "fastify";
+import Fastify, { type FastifyServerOptions } from "fastify";
 import {
   serializerCompiler,
   validatorCompiler,
-  ZodTypeProvider,
+  type ZodTypeProvider,
 } from "fastify-type-provider-zod";
 import { errorPlugin } from "./lib/plugins/error";
 import { apiRoutes } from "./routes/api";

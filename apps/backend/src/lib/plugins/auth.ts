@@ -1,10 +1,10 @@
 import {
-  FastifyPluginAsync,
-  FastifyInstance,
-  preHandlerHookHandler,
+  type FastifyPluginAsync,
+  type FastifyInstance,
+  type preHandlerHookHandler,
 } from "fastify";
 import fp from "fastify-plugin";
-import fastifyAuth, { FastifyAuthFunction } from "@fastify/auth";
+import fastifyAuth, { type FastifyAuthFunction } from "@fastify/auth";
 import { lucia } from "../lucia";
 import { User, Session } from "@repo/schema";
 import { prisma } from "@repo/db";

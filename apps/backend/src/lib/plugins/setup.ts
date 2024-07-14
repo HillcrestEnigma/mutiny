@@ -1,4 +1,4 @@
-import { FastifyPluginAsync, FastifyInstance } from "fastify";
+import { type FastifyPluginAsync, type FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import { prisma } from "@repo/db";
 

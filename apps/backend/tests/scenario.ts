@@ -50,24 +50,32 @@ export const scenario: {
   }),
 };
 
-const passwordHash = await hashPassword("password");
+export const bakeScenario = async () => {
+  const passwordHash = await hashPassword("password");
 
-await Promise.all(
-  scenario.users.map(async (user) => {
-    const userId = generateUserId();
+  await prisma.$transaction([
+    prisma.email.deleteMany(),
+    prisma.session.deleteMany(),
+    prisma.user.deleteMany(),
+  ]);
 
-    return prisma.user.create({
-      data: {
-        id: userId,
-        username: user.username,
-        passwordHash,
-        emails: {
-          create: user.emails,
+  await Promise.all(
+    scenario.users.map(async (user) => {
+      const userId = generateUserId();
+
+      return prisma.user.create({
+        data: {
+          id: userId,
+          username: user.username,
+          passwordHash,
+          emails: {
+            create: user.emails,
+          },
+          sessions: {
+            create: user.sessions,
+          },
         },
-        sessions: {
-          create: user.sessions,
-        },
-      },
-    });
-  }),
-);
+      });
+    }),
+  );
+};

@@ -1,6 +1,6 @@
 import { prisma } from "@repo/db";
 import type { GlobalSetupContext } from "vitest/node";
-import { scenario } from "./scenario";
+import { scenario, bakeScenario } from "./scenario";
 
 declare module "vitest" {
   export interface ProvidedContext {
@@ -10,6 +10,8 @@ declare module "vitest" {
 
 export const setup = async ({ provide }: GlobalSetupContext) => {
   await prisma.$connect();
+
+  await bakeScenario();
 
   provide("scenario", scenario);
 };

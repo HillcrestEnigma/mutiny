@@ -1,31 +1,30 @@
 {
-  "name": "@repo/db",
+  "name": "@repo/error",
   "type": "module",
   "private": true,
   "prettier": "@repo/config-prettier",
-  "exports": {
-    ".": "./src/index.ts"
-  },
-  "prisma": {
-    "schema": "src/schema.prisma"
-  },
   "scripts": {
-    "setup-ephemeral": "bun run scripts/setup-ephemeral.ts",
-    "build": "prisma generate",
+    "build": "swc ./src --out-dir ./dist",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "formatcheck": "prettier . --check",
     "format": "prettier . --write"
   },
+  "exports": {
+    ".": {
+      "types": "./src/errors.ts",
+      "default": "./dist/src/errors.js"
+    }
+  },
+  "dependencies": {
+    "@repo/schema": "workspace:*"
+  },
   "devDependencies": {
     "@repo/config-eslint": "workspace:*",
     "@repo/config-prettier": "workspace:*",
     "@repo/config-typescript": "workspace:*",
-    "prisma": "^5.16.2",
-    "typescript": "^5.5.3",
-    "zx": "^8.1.4"
-  },
-  "dependencies": {
-    "@prisma/client": "5.16.2"
+    "@swc/cli": "^0.4.0",
+    "@swc/core": "1.6.13",
+    "typescript": "^5.5.3"
   }
 }

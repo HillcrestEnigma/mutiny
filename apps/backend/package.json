@@ -1,12 +1,14 @@
 {
-  "name": "mutiny-backend",
+  "name": "@repo/backend",
   "description": "Mutiny Backend",
   "keywords": [],
   "author": "Paul Lee",
   "version": "0.1.0",
   "license": "AGPL-3.0-or-later",
   "type": "module",
-  "main": "src/server.js",
+  "exports": {
+    ".": "./src/app.ts"
+  },
   "prettier": "@repo/config-prettier",
   "scripts": {
     "start": "dotenvx run -- bun run --hot ./src/server.ts",
@@ -23,6 +25,7 @@
     "@lucia-auth/adapter-prisma": "^4.0.1",
     "@repo/db": "workspace:*",
     "@repo/schema": "workspace:*",
+    "@repo/error": "workspace:*",
     "@scalar/fastify-api-reference": "^1.24.41",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
@@ -41,7 +44,6 @@
     "pino-pretty": "^11.2.1",
     "prettier": "3.3.2",
     "typescript": "^5.5.3",
-    "vitest": "^2.0.1",
-    "zx": "^8.1.4"
+    "vitest": "^2.0.1"
   }
 }

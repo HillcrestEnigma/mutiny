@@ -4,15 +4,15 @@ import {
   SessionResponse,
   ValidationErrorResponse,
   AuthenticatedUserResponse,
-  GenericErrorResponse,
   ConflictErrorResponse,
+  FastifyErrorResponse,
   UnauthorizedErrorResponse,
 } from "@repo/schema";
 import { type FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { lucia } from "../../lib/lucia";
 import { prisma } from "@repo/db";
 import { generateUserId, hashPassword } from "../../lib/utils/auth";
-import { ConflictError } from "../../lib/errors";
+import { ConflictError } from "@repo/error";
 
 export const userRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
@@ -31,8 +31,9 @@ export const userRoutes: FastifyPluginAsyncZod = async (
         ],
         response: {
           200: AuthenticatedUserResponse,
+          401: UnauthorizedErrorResponse,
           422: ValidationErrorResponse,
-          default: GenericErrorResponse,
+          default: FastifyErrorResponse,
         },
       },
       ...app.authRequired,
@@ -54,10 +55,9 @@ export const userRoutes: FastifyPluginAsyncZod = async (
         body: UserCreatePayload,
         response: {
           201: SessionResponse,
-          401: UnauthorizedErrorResponse,
           409: ConflictErrorResponse,
           422: ValidationErrorResponse,
-          default: GenericErrorResponse,
+          default: FastifyErrorResponse,
         },
       },
     },

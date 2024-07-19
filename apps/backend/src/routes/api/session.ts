@@ -6,14 +6,14 @@ import {
   GenericResponse,
   AuthenticatedSessionResponse,
   ValidationErrorResponse,
-  GenericErrorResponse,
   UnauthorizedErrorResponse,
+  FastifyErrorResponse,
 } from "@repo/schema";
 import { type FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { lucia } from "../../lib/lucia";
 import { prisma } from "@repo/db";
 import { verifyPassword } from "../../lib/utils/auth";
-import { UnauthorizedError } from "../../lib/errors";
+import { UnauthorizedError } from "@repo/error";
 
 export const sessionRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
@@ -34,7 +34,7 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
           200: AuthenticatedSessionResponse,
           401: UnauthorizedErrorResponse,
           422: ValidationErrorResponse,
-          default: GenericErrorResponse,
+          default: FastifyErrorResponse,
         },
       },
       ...app.authRequired,
@@ -56,8 +56,9 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
         body: SessionCreatePayload,
         response: {
           201: SessionResponse,
+          401: UnauthorizedErrorResponse,
           422: ValidationErrorResponse,
-          default: GenericErrorResponse,
+          default: FastifyErrorResponse,
         },
       },
     },
@@ -110,7 +111,7 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
         response: {
           200: GenericResponse,
           422: ValidationErrorResponse,
-          default: GenericErrorResponse,
+          default: FastifyErrorResponse,
         },
       },
     },

@@ -8,7 +8,7 @@ import fastifyAuth, { type FastifyAuthFunction } from "@fastify/auth";
 import { lucia } from "../lucia";
 import { User, Session } from "@repo/schema";
 import { prisma } from "@repo/db";
-import { UnauthorizedError } from "../errors";
+import { UnauthorizedError } from "@repo/error";
 
 declare module "fastify" {
   interface FastifyRequest {

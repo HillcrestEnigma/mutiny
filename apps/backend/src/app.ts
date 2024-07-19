@@ -10,8 +10,8 @@ import { authPlugin } from "./lib/plugins/auth";
 import { setupPlugin } from "./lib/plugins/setup";
 import { openapiPlugin } from "./lib/plugins/openapi";
 
-export async function build(opts: FastifyServerOptions = {}) {
-  const app = Fastify(opts).withTypeProvider<ZodTypeProvider>();
+export async function build(options: FastifyServerOptions = {}) {
+  const app = Fastify(options).withTypeProvider<ZodTypeProvider>();
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
 

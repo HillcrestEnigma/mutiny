@@ -1,7 +1,7 @@
 import { $ } from "bun";
 import { config } from "@dotenvx/dotenvx";
 
-config();
+config({ path: "../../apps/backend/.env" });
 
 const DATABASE_URL = await $`bun run setup-ephemeral`
   .cwd("../../packages/db")
@@ -12,6 +12,7 @@ $.env({
   NODE_ENV: "test",
   DATABASE_URL,
   FORCE_COLOR: "1",
+  FORCE_LOG: "1",
 });
 
-await $`vitest run -r ./tests`.nothrow();
+await $`bun test --preload ./setup.ts`.cwd("./tests").nothrow();

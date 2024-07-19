@@ -3,7 +3,7 @@ import { SessionId } from "../fields";
 
 export const Session = z.object({
   id: SessionId,
-  expiresAt: z.date().optional(),
+  expiresAt: z.coerce.date().optional(),
   fresh: z.boolean().optional(),
   userId: z.string().optional(),
 });

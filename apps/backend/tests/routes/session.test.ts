@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test, inject } from "vitest";
 import {
   AuthenticatedSessionResponse,
-  ErrorResponse,
   SessionResponse,
+  UnauthorizedErrorResponse,
   ValidationErrorResponse,
 } from "@repo/schema";
 import { app } from "../build";
@@ -21,7 +21,7 @@ describe("Authentication", async () => {
 
     expect(response.statusCode).toBe(200);
 
-    const result = response.json() as AuthenticatedSessionResponse;
+    const result = AuthenticatedSessionResponse.parse(response.json());
 
     expect(result.session.id).toHaveLength(40);
   });
@@ -37,7 +37,7 @@ describe("Authentication", async () => {
 
     expect(response.statusCode).toBe(401);
 
-    const result = response.json() as ErrorResponse;
+    const result = UnauthorizedErrorResponse.parse(response.json());
 
     expect(result.error).toBe("unauthorized");
   });
@@ -50,7 +50,7 @@ describe("Authentication", async () => {
 
     expect(response.statusCode).toBe(401);
 
-    const result = response.json() as ErrorResponse;
+    const result = UnauthorizedErrorResponse.parse(response.json());
 
     expect(result.error).toBe("unauthorized");
   });
@@ -108,7 +108,7 @@ describe("Sign In", async () => {
 
     expect(response.statusCode).toBe(401);
 
-    const result = response.json() as ValidationErrorResponse;
+    const result = UnauthorizedErrorResponse.parse(response.json());
 
     expect(result.error).toBe("unauthorized");
   });
@@ -125,7 +125,7 @@ describe("Sign In", async () => {
 
     expect(response.statusCode).toBe(401);
 
-    const result = response.json() as ValidationErrorResponse;
+    const result = UnauthorizedErrorResponse.parse(response.json());
 
     expect(result.error).toBe("unauthorized");
   });
@@ -144,7 +144,7 @@ describe("Sign Out", async () => {
       },
     });
 
-    const result = response.json() as SessionResponse;
+    const result = SessionResponse.parse(response.json());
 
     sessionId = result.sessionId;
   });
@@ -170,7 +170,7 @@ describe("Sign Out", async () => {
 
     expect(response.statusCode).toBe(401);
 
-    const result = response.json() as ErrorResponse;
+    const result = UnauthorizedErrorResponse.parse(response.json());
 
     expect(result.error).toBe("unauthorized");
   });
@@ -186,7 +186,7 @@ describe("Sign Out", async () => {
 
     expect(response.statusCode).toBe(422);
 
-    const result = response.json() as ValidationErrorResponse;
+    const result = ValidationErrorResponse.parse(response.json());
 
     expect(result.error).toBe("validation");
     expect(result.field).toBe("sessionId");

@@ -1,0 +1,38 @@
+{
+  "name": "@repo/client",
+  "type": "module",
+  "private": true,
+  "prettier": "@repo/config-prettier",
+  "scripts": {
+    "build": "swc ./src --out-dir ./dist",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "formatcheck": "prettier . --check",
+    "format": "prettier . --write",
+    "test": "bun run ./scripts/test-integration.ts"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/factory.ts",
+      "default": "./dist/src/factory.js"
+    }
+  },
+  "dependencies": {
+    "@repo/error": "workspace:*",
+    "@repo/schema": "workspace:*",
+    "semver": "^7.6.3"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.6",
+    "@dotenvx/dotenvx": "^1.5.0",
+    "@repo/config-eslint": "workspace:*",
+    "@repo/config-prettier": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "@swc/cli": "^0.4.0",
+    "@swc/core": "1.6.13",
+    "@types/semver": "^7.5.8",
+    "type-fest": "^4.22.0",
+    "typescript": "^5.5.3",
+    "@repo/backend": "workspace:*"
+  }
+}

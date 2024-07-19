@@ -2,9 +2,9 @@ import { describe, expect, test, inject } from "vitest";
 import {
   SessionResponse,
   AuthenticatedUserResponse,
-  ErrorResponse,
   ValidationErrorResponse,
   ConflictErrorResponse,
+  UnauthorizedErrorResponse,
 } from "@repo/schema";
 import { app } from "../build";
 
@@ -22,7 +22,7 @@ describe("Authentication", async () => {
 
     expect(response.statusCode).toBe(200);
 
-    const result = response.json() as AuthenticatedUserResponse;
+    const result = AuthenticatedUserResponse.parse(response.json());
 
     expect(result.user.username).toBe(scenario.users[0].username);
     expect(result.user).not.toHaveProperty("passwordHash");
@@ -44,7 +44,7 @@ describe("Authentication", async () => {
 
     expect(response.statusCode).toBe(401);
 
-    const result = response.json() as ErrorResponse;
+    const result = UnauthorizedErrorResponse.parse(response.json());
 
     expect(result.error).toBe("unauthorized");
   });
@@ -57,7 +57,7 @@ describe("Authentication", async () => {
 
     expect(response.statusCode).toBe(401);
 
-    const result = response.json() as ErrorResponse;
+    const result = UnauthorizedErrorResponse.parse(response.json());
 
     expect(result.error).toBe("unauthorized");
   });
@@ -77,7 +77,7 @@ describe("Sign Up", async () => {
 
     expect(response.statusCode).toBe(201);
 
-    const result = response.json() as SessionResponse;
+    const result = SessionResponse.parse(response.json());
 
     expect(result.sessionId).toHaveLength(40);
   });
@@ -95,7 +95,7 @@ describe("Sign Up", async () => {
 
     expect(response.statusCode).toBe(422);
 
-    const result = response.json() as ValidationErrorResponse;
+    const result = ValidationErrorResponse.parse(response.json());
 
     expect(result.error).toBe("validation");
     expect(result.field).toBe("username");
@@ -114,7 +114,7 @@ describe("Sign Up", async () => {
 
     expect(response.statusCode).toBe(422);
 
-    const result = response.json() as ValidationErrorResponse;
+    const result = ValidationErrorResponse.parse(response.json());
 
     expect(result.error).toBe("validation");
     expect(result.field).toBe("email");
@@ -133,7 +133,7 @@ describe("Sign Up", async () => {
 
     expect(response.statusCode).toBe(422);
 
-    const result = response.json() as ValidationErrorResponse;
+    const result = ValidationErrorResponse.parse(response.json());
 
     expect(result.error).toBe("validation");
     expect(result.field).toBe("password");
@@ -164,7 +164,7 @@ describe("Sign Up", async () => {
 
     expect(response.statusCode).toBe(409);
 
-    let result = response.json() as ConflictErrorResponse;
+    let result = ConflictErrorResponse.parse(response.json());
 
     expect(result.resource).toBe("username");
 
@@ -180,7 +180,7 @@ describe("Sign Up", async () => {
 
     expect(response.statusCode).toBe(409);
 
-    result = response.json() as ConflictErrorResponse;
+    result = ConflictErrorResponse.parse(response.json());
 
     expect(result.resource).toBe("email");
   });

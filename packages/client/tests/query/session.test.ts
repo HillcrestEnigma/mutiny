@@ -1,5 +1,5 @@
-import { expect, test, describe, beforeAll } from "bun:test";
-import { client, session } from "../client";
+import { expect, test, describe, beforeAll, beforeEach } from "bun:test";
+import { client, clientSessionSetterSpy, session } from "../client";
 import { UnauthorizedError } from "@repo/error";
 
 describe("Session-related methods", () => {
@@ -17,6 +17,11 @@ describe("Session-related methods", () => {
     userId = user.id;
 
     client.session = null;
+  });
+
+  beforeEach(() => {
+    client.session = null;
+    clientSessionSetterSpy.mockClear();
   });
 
   test("getAuthenticatedSession after createSession with username", async () => {
@@ -61,6 +66,21 @@ describe("Session-related methods", () => {
 
     expect(async () => {
       await client.getAuthenticatedSession();
+    }).toThrow(UnauthorizedError);
+  });
+
+  test("deleteSession when not authenticated", async () => {
+    await client.deleteAuthenticatedSession();
+
+    expect(client.session).toBeNull();
+  });
+
+  test("createSession with invalid credentials", async () => {
+    expect(async () => {
+      await client.createSession({
+        usernameOrEmail: "test_session_nonexist",
+        password: "password",
+      });
     }).toThrow(UnauthorizedError);
   });
 });

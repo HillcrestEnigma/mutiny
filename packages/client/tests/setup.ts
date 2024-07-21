@@ -4,7 +4,7 @@ import { createClient } from "./client";
 
 const app = await build({
   logger: {
-    level: "error",
+    level: "fatal",
     transport: {
       target: "pino-pretty",
     },

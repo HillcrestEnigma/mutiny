@@ -4,11 +4,14 @@
   "private": true,
   "exports": {
     ".": "./base.js",
-    "./node": "./node.js"
+    "./node": "./node.js",
+    "./react": "./react.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.6.0",
+    "@tanstack/eslint-plugin-query": "^5.51.12",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.35.0",
     "globals": "^15.8.0",
     "typescript-eslint": "^7.16.0"
   }

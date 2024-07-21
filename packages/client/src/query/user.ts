@@ -1,11 +1,11 @@
-import { Client, type ClientQueryMethod } from "@/client";
+import { Client, type ClientQueryMethod } from "../client";
 import {
   AuthenticatedUserResponse,
   SessionResponse,
   UserCreatePayload,
 } from "@repo/schema";
 
-declare module "@/client" {
+declare module "../client" {
   interface Client {
     getAuthenticatedUser: ClientQueryMethod<AuthenticatedUserResponse["user"]>;
     createUser: ClientQueryMethod<void, [UserCreatePayload]>;

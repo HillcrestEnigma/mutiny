@@ -1,0 +1,39 @@
+{
+  "name": "@repo/hook",
+  "type": "module",
+  "private": true,
+  "prettier": "@repo/config-prettier",
+  "scripts": {
+    "build": "swc ./src --out-dir ./dist",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "formatcheck": "prettier . --check",
+    "format": "prettier . --write"
+  },
+  "exports": {
+    "./provider": {
+      "types": "./src/provider.ts",
+      "default": "./dist/src/provider.js"
+    },
+    "./query": {
+      "types": "./src/query/index.ts",
+      "default": "./dist/src/query/index.js"
+    }
+  },
+  "dependencies": {
+    "@repo/client": "workspace:*",
+    "@tanstack/react-query": "^5.51.11",
+    "@types/react": "^18.3.3",
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "@repo/schema": "workspace:*",
+    "@repo/config-eslint": "workspace:*",
+    "@repo/config-prettier": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "@swc/cli": "^0.4.0",
+    "@swc/core": "1.6.13",
+    "@tanstack/eslint-plugin-query": "^5.51.12",
+    "typescript": "^5.5.3"
+  }
+}

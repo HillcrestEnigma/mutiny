@@ -1,4 +1,4 @@
-import { Client, type ClientQueryMethod } from "@/client";
+import { Client, type ClientQueryMethod } from "../client";
 import {
   AuthenticatedSessionResponse,
   SessionResponse,
@@ -6,7 +6,7 @@ import {
   SessionDeletePayload,
 } from "@repo/schema";
 
-declare module "@/client" {
+declare module "../client" {
   interface Client {
     getAuthenticatedSession: ClientQueryMethod<
       AuthenticatedSessionResponse["session"]

@@ -1,6 +1,6 @@
 import { spyOn, type Mock } from "bun:test";
-import { MutinyClient } from "@/factory";
-import type { SessionGetter, SessionSetter } from "@/client";
+import { MutinyClient } from "../src/factory";
+import type { SessionGetter, SessionSetter } from "../src/client";
 
 export let session: string | null = null;
 

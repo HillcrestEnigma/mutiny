@@ -24,15 +24,17 @@
   },
   "devDependencies": {
     "@types/bun": "^1.1.6",
-    "@dotenvx/dotenvx": "^1.5.0",
+    "@dotenvx/dotenvx": "^1.6.4",
     "@repo/config-eslint": "workspace:*",
     "@repo/config-prettier": "workspace:*",
     "@repo/config-typescript": "workspace:*",
     "@swc/cli": "^0.4.0",
-    "@swc/core": "1.6.13",
+    "@swc/core": "1.7.0",
     "@types/semver": "^7.5.8",
-    "type-fest": "^4.22.0",
+    "type-fest": "^4.22.1",
     "typescript": "^5.5.3",
-    "@repo/backend": "workspace:*"
+    "@repo/backend": "workspace:*",
+    "eslint": "~9.7.0",
+    "prettier": "3.3.3"
   }
 }

@@ -25,19 +25,21 @@ Client.prototype.getAuthenticatedSession = async function () {
 Client.prototype.createSession = async function (body: SessionCreatePayload) {
   const result = SessionResponse.parse(await this.post("/session", body));
 
-  this.session = result.sessionId;
+  await this.setSession(result.sessionId);
 };
 
 Client.prototype.deleteAuthenticatedSession = async function () {
-  if (!this.session) {
+  const session = await this.session();
+
+  if (!session) {
     return;
   }
 
   const body: SessionDeletePayload = {
-    sessionId: this.session,
+    sessionId: session,
   };
 
-  this.session = null;
+  await this.setSession(null);
 
   await this.delete("/session", body);
 };

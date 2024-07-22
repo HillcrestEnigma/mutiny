@@ -3,8 +3,8 @@ import { client, clientSessionSetterSpy } from "../client";
 import { UnauthorizedError, ValidationError } from "@repo/error";
 
 describe("User-related methods", () => {
-  beforeEach(() => {
-    client.session = null;
+  beforeEach(async () => {
+    await client.setSession(null);
     clientSessionSetterSpy.mockClear();
   });
 

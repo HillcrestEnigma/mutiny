@@ -26,7 +26,7 @@
     "@repo/db": "workspace:*",
     "@repo/schema": "workspace:*",
     "@repo/error": "workspace:*",
-    "@scalar/fastify-api-reference": "^1.24.41",
+    "@scalar/fastify-api-reference": "^1.24.52",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
     "fastify-type-provider-zod": "^2.0.0",
@@ -36,14 +36,14 @@
   },
   "devDependencies": {
     "@types/bun": "^1.1.6",
-    "@dotenvx/dotenvx": "^1.5.0",
+    "@dotenvx/dotenvx": "^1.6.4",
     "@repo/config-eslint": "workspace:*",
     "@repo/config-prettier": "workspace:*",
     "@repo/config-typescript": "workspace:*",
-    "eslint": "~9.6.0",
+    "eslint": "~9.7.0",
     "pino-pretty": "^11.2.1",
-    "prettier": "3.3.2",
+    "prettier": "3.3.3",
     "typescript": "^5.5.3",
-    "vitest": "^2.0.1"
+    "vitest": "^2.0.3"
   }
 }

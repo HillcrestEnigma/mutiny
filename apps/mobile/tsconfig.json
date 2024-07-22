@@ -1,7 +1,7 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "@repo/config-typescript",
   "compilerOptions": {
-    "strict": true,
+    // "moduleResolution": "Node",
     "paths": {
       "@/*": ["./src/*"]
     }

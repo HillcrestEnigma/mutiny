@@ -10,9 +10,10 @@ export let clientSessionGetterSpy: Mock<SessionGetter>;
 export let clientSessionSetterSpy: Mock<SessionSetter>;
 
 export function createClient() {
-  client = MutinyClient("http://localhost:4000/api", {
-    sessionGetter: () => session,
-    sessionSetter: (newSession) => {
+  client = MutinyClient({
+    baseURL: "http://localhost:4000/api",
+    sessionGetter: async () => session,
+    sessionSetter: async (newSession) => {
       session = newSession;
     },
   });

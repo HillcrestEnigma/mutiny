@@ -12,10 +12,11 @@ enum HTTPRequestMethod {
 }
 
 type Session = string | null;
-export type SessionGetter = () => Session;
-export type SessionSetter = (sessionToken: Session) => void;
+export type SessionGetter = () => Promise<Session>;
+export type SessionSetter = (sessionToken: Session) => Promise<void>;
 
 export interface ClientOptions {
+  baseURL: string;
   sessionGetter?: SessionGetter;
   sessionSetter?: SessionSetter;
 }
@@ -26,36 +27,38 @@ export type ClientQueryMethod<R, A extends Array<unknown> = []> = (
 
 export class Client {
   baseURL: string;
-  sessionToken: Session;
-  sessionGetter: SessionGetter = () => null;
-  sessionSetter: SessionSetter = () => undefined;
+  sessionToken: Session = null;
+  sessionGetter: SessionGetter = async () => null;
+  sessionSetter: SessionSetter = async () => undefined;
   compatibleServerVersion = "0.1.0";
 
-  constructor(baseURL: string, options?: ClientOptions) {
-    this.baseURL = baseURL;
+  constructor(options: ClientOptions) {
+    this.baseURL = options.baseURL;
 
-    if (options && options.sessionGetter) {
+    if (options?.sessionGetter) {
       this.sessionGetter = options.sessionGetter;
     }
 
-    if (options && options.sessionSetter) {
+    if (options?.sessionSetter) {
       this.sessionSetter = options.sessionSetter;
     }
 
-    this.sessionToken = this.sessionGetter();
+    this.sessionGetter().then((sessionToken) => {
+      this.sessionToken = sessionToken;
+    });
 
     this.checkServer();
   }
 
-  set session(token: Session) {
+  async setSession(token: Session) {
     this.sessionToken = token;
 
-    this.sessionSetter(token);
+    await this.sessionSetter(token);
   }
 
-  get session() {
+  async session() {
     if (!this.sessionToken) {
-      this.sessionToken = this.sessionGetter();
+      this.sessionToken = await this.sessionGetter();
     }
 
     return this.sessionToken;
@@ -65,9 +68,11 @@ export class Client {
     return new URL(this.baseURL + path);
   }
 
-  headers(json: boolean) {
+  async headers(json: boolean) {
+    const session = await this.session();
+
     const headers: Record<string, string> = {
-      Authorization: this.session ? `Bearer ${this.session}` : "",
+      Authorization: session ? `Bearer ${session}` : "",
     };
 
     if (json) {
@@ -92,9 +97,11 @@ export class Client {
     method: HTTPRequestMethod,
     body?: JsonObject,
   ): Promise<JsonObject> {
+    const headers = await this.headers(body !== undefined);
+
     const response = await fetch(this.url(path), {
       method,
-      headers: this.headers(body !== undefined),
+      headers,
       body: JSON.stringify(body),
     });
 

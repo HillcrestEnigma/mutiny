@@ -1,19 +1,21 @@
-import type { MutinyClient } from "@repo/client";
+import { MutinyClient, type MutinyClientOptions } from "@repo/client";
 import {
   QueryClientProvider as TanstackQueryProvider,
   QueryClient as TanstackQueryClient,
 } from "@tanstack/react-query";
-import { type ReactNode } from "react";
-import { MutinyClientContext } from "./context";
+import { useState, type ReactNode } from "react";
+import { MutinyClientContext, type OptionalMutinyClient } from "./context";
 
 const tanstackQueryClient = new TanstackQueryClient();
 
-interface ProviderProps {
-  client: MutinyClient;
+interface MutinyProviderProps {
+  config: MutinyClientOptions;
   children: ReactNode;
 }
 
-export function Provider({ client, children }: ProviderProps) {
+export function MutinyProvider({ config, children }: MutinyProviderProps) {
+  const [client] = useState<OptionalMutinyClient>(MutinyClient(config));
+
   return (
     <MutinyClientContext.Provider value={client}>
       <TanstackQueryProvider client={tanstackQueryClient}>

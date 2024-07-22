@@ -1,11 +1,17 @@
 import { MutinyClient } from "@repo/client";
-import { createContext, useContext } from "react";
+import { type Context as ReactContext, createContext, useContext } from "react";
 
-const defaultClient = MutinyClient();
+export type OptionalMutinyClient = MutinyClient | null;
 
-export const MutinyClientContext: React.Context<MutinyClient> =
-  createContext(defaultClient);
+export const MutinyClientContext: ReactContext<OptionalMutinyClient> =
+  createContext<OptionalMutinyClient>(null);
 
 export function useMutinyClient(): MutinyClient {
-  return useContext(MutinyClientContext);
+  const client = useContext(MutinyClientContext);
+
+  if (client === null) {
+    throw new Error("MutinyProvider not found in the component tree");
+  }
+
+  return client;
 }

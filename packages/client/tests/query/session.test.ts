@@ -16,11 +16,11 @@ describe("Session-related methods", () => {
 
     userId = user.id;
 
-    client.session = null;
+    await client.setSession(null);
   });
 
-  beforeEach(() => {
-    client.session = null;
+  beforeEach(async () => {
+    await client.setSession(null);
     clientSessionSetterSpy.mockClear();
   });
 
@@ -30,8 +30,8 @@ describe("Session-related methods", () => {
       password: "password",
     });
 
-    expect(client.session).not.toBeNull();
-    expect(client.session).toEqual(session);
+    expect(await client.session()).not.toBeNull();
+    expect(await client.session()).toEqual(session);
 
     const result = await client.getAuthenticatedSession();
 
@@ -44,8 +44,8 @@ describe("Session-related methods", () => {
       password: "password",
     });
 
-    expect(client.session).not.toBeNull();
-    expect(client.session).toEqual(session);
+    expect(await client.session()).not.toBeNull();
+    expect(await client.session()).toEqual(session);
 
     const result = await client.getAuthenticatedSession();
 
@@ -62,7 +62,7 @@ describe("Session-related methods", () => {
 
     await client.deleteAuthenticatedSession();
 
-    expect(client.session).toBeNull();
+    expect(await client.session()).toBeNull();
 
     expect(async () => {
       await client.getAuthenticatedSession();
@@ -72,7 +72,7 @@ describe("Session-related methods", () => {
   test("deleteSession when not authenticated", async () => {
     await client.deleteAuthenticatedSession();
 
-    expect(client.session).toBeNull();
+    expect(await client.session()).toBeNull();
   });
 
   test("createSession with invalid credentials", async () => {

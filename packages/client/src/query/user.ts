@@ -21,5 +21,5 @@ Client.prototype.getAuthenticatedUser = async function () {
 Client.prototype.createUser = async function (body: UserCreatePayload) {
   const result = SessionResponse.parse(await this.post("/user", body));
 
-  this.session = result.sessionId;
+  await this.setSession(result.sessionId);
 };

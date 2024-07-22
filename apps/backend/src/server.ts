@@ -10,7 +10,7 @@ const app = await build({
 });
 
 try {
-  await app.listen({ port: 5000 });
+  await app.listen({ port: 5000, host: "::" });
 } catch (error) {
   app.log.error(error);
   process.exit(1);

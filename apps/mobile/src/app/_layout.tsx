@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Stack } from "expo-router";
+import { Slot } from "expo-router";
 import { useFonts, Inter_900Black } from "@expo-google-fonts/inter";
 import { SplashScreen } from "expo-router";
 import { useReactNavigationTheme } from "@/lib/hooks/theme";
@@ -39,9 +39,7 @@ export default function RootLayout() {
       }}
     >
       <ThemeProvider value={theme}>
-        <Stack>
-          <Stack.Screen name="index" />
-        </Stack>
+        <Slot />
       </ThemeProvider>
     </MutinyProvider>
   );

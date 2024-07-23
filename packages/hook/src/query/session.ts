@@ -8,6 +8,7 @@ export function useAuthenticatedSession() {
   return useQuery({
     queryKey: ["session"],
     queryFn: async () => client.getAuthenticatedSession(),
+    retry: false,
   });
 }
 

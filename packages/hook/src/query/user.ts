@@ -8,6 +8,7 @@ export function useAuthenticatedUser() {
   return useQuery({
     queryKey: ["user"],
     queryFn: async () => client.getAuthenticatedUser(),
+    retry: false,
   });
 }
 

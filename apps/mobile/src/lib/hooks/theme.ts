@@ -1,8 +1,9 @@
 import materialTheme from "@/assets/material-theme.json";
-import { useColorScheme } from "react-native";
+import { useMemo } from "react";
+import { StyleSheet, useColorScheme } from "react-native";
 
 type ColorScheme = "light" | "dark";
-type Theme = (typeof materialTheme.schemes)["light"];
+export type Theme = (typeof materialTheme.schemes)["light"];
 
 const themes: { [key: string]: Theme } = materialTheme.schemes;
 
@@ -42,4 +43,12 @@ export function useReactNavigationTheme() {
   const colorscheme = useColorSchemeSafe();
 
   return reactNavigationTheme[colorscheme];
+}
+
+export function useStyle<T extends StyleSheet.NamedStyles<T>>(
+  styleSheetFactory: (theme: Theme) => T,
+): T {
+  const theme = useTheme();
+
+  return useMemo(() => StyleSheet.create(styleSheetFactory(theme)), [theme]);
 }

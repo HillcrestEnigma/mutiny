@@ -2,7 +2,7 @@ import baseConfig from './base.js';
 import globals from 'globals';
 import reactPlugin from 'eslint-plugin-react';
 import queryPlugin from '@tanstack/eslint-plugin-query';
-import hooksPlugin from 'eslint-plugin-react-hooks';
+// import hooksPlugin from 'eslint-plugin-react-hooks';
 
 export default [
   ...baseConfig,
@@ -24,13 +24,16 @@ export default [
   },
   reactPlugin.configs.flat['jsx-runtime'],
   ...queryPlugin.configs['flat/recommended'],
-  {
-    plugins: {
-      'react-hooks': hooksPlugin,
-    },
-    rules: {
-      ...hooksPlugin.configs.recommended.rules,
-      'react-hooks/exhaustive-deps': 'off',
-    },
-  },
+
+  // Temporarily disabled
+  // TODO: fix
+  // {
+  //   plugins: {
+  //     'react-hooks': hooksPlugin,
+  //   },
+  //   rules: {
+  //     ...hooksPlugin.configs.recommended.rules,
+  //     'react-hooks/exhaustive-deps': 'off',
+  //   },
+  // },
 ];

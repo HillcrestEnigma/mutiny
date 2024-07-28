@@ -1,6 +1,5 @@
 import { Stack } from "expo-router";
 import { useAuthenticatedSession } from "@repo/hook/query";
-import { StyleSheet } from "react-native";
 
 export default function AppLayout() {
   const { isLoading, isSuccess: isSignedIn } = useAuthenticatedSession();
@@ -9,24 +8,19 @@ export default function AppLayout() {
     return null;
   }
 
-  if (!isSignedIn) {
-    return (
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(auth)/index" />
-      </Stack>
-    );
-  } else {
-    return (
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-    );
-  }
-}
+  const headerScreenOptions = { headerShown: false };
 
-StyleSheet.create({
-  header: {
-    elevation: 0,
-    shadowOpacity: 0,
-  },
-});
+  return (
+    <>
+      {isSignedIn ? (
+        <Stack screenOptions={headerScreenOptions}>
+          <Stack.Screen name="(tabs)" />
+        </Stack>
+      ) : (
+        <Stack screenOptions={headerScreenOptions}>
+          <Stack.Screen name="(auth)" />
+        </Stack>
+      )}
+    </>
+  );
+}

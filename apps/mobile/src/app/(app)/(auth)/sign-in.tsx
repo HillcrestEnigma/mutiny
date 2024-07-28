@@ -1,67 +1,72 @@
-import { Text, View, TextInput, Button, StyleSheet } from "react-native";
-import { useForm, Controller } from "react-hook-form";
+import { View } from "react-native";
+import { useForm } from "react-hook-form";
+import { useStyle } from "@/lib/hooks/style";
+import { Stack } from "expo-router";
+import { Button } from "@/lib/components/button";
+import { TextInput } from "@/lib/components/form/textinput";
+import { Card, CardTitle } from "@/lib/components/card";
+import { Form } from "@/lib/components/form";
+
+interface FormValues {
+  usernameOrEmail: string;
+  password: string;
+}
 
 export default function SignIn() {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-    },
+  const { stylesheet } = useStyle({
+    stylesheet: () => ({
+      container: {
+        justifyContent: "center",
+        alignItems: "center",
+        flexGrow: 1,
+        margin: 20,
+      },
+    }),
   });
 
+  const form = useForm({
+    defaultValues: {
+      usernameOrEmail: "",
+      password: "",
+    },
+  });
+  const { handleSubmit } = form;
+
   return (
-    <View style={styles.view}>
-      <View>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              placeholder="First name"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />
-          )}
-          name="firstName"
-        />
-        {errors.firstName && <Text>This is required.</Text>}
+    <View style={stylesheet.container}>
+      <Stack.Screen
+        options={{
+          title: "Sign In",
+        }}
+      />
+      <Card height={400} gap={20}>
+        <CardTitle title="Sign In to Mutiny" />
 
-        <Controller
-          control={control}
-          rules={{
-            maxLength: 100,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              placeholder="Last name"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />
-          )}
-          name="lastName"
-        />
+        <Form<FormValues> form={form}>
+          <TextInput
+            name="usernameOrEmail"
+            label="Username or Email"
+            rules={{
+              required: true,
+            }}
+          />
 
-        <Button
-          title="Submit"
-          onPress={handleSubmit((data) => console.log(data))}
-        />
-      </View>
+          <TextInput
+            name="password"
+            label="Password"
+            rules={{
+              maxLength: 10,
+            }}
+            secureTextEntry={true}
+          />
+
+          <Button
+            title="Sign In"
+            flex={20}
+            onPress={handleSubmit((data) => console.log(data))}
+          />
+        </Form>
+      </Card>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

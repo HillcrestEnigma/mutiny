@@ -1,64 +1,46 @@
-import { useInsets } from "@/lib/hooks/insets";
-import { useStyle } from "@/lib/hooks/theme";
-import { Pressable, Text, View } from "react-native";
-import { Link } from "expo-router";
+import { useStyle } from "@/lib/hooks/style";
+import { Text } from "react-native";
+import { Link, Stack } from "expo-router";
+import { Button, ButtonDrawerFixed } from "@/lib/components/button";
 
 export default function Index() {
-  const insets = useInsets();
-
-  const styles = useStyle((theme) => ({
-    main: {
-      paddingTop: insets.top + 20,
-      flexGrow: 1,
-    },
-    title: {
-      paddingHorizontal: Math.max(insets.left, insets.top / 2),
-      fontSize: 40,
-      fontWeight: "bold",
-      color: theme.onBackground,
-      flex: 10,
-    },
-    buttonContainer: {
-      padding: insets.max,
-      borderTopLeftRadius: 45,
-      borderTopRightRadius: 45,
-      flex: 3,
-      gap: 30,
-      justifyContent: "space-between",
-      alignContent: "center",
-      backgroundColor: theme.primaryContainer,
-    },
-    button: {
-      flex: 1,
-      padding: 10,
-      backgroundColor: theme.primary,
-      borderRadius: 90,
-    },
-    buttonText: {
-      flexGrow: 1,
-      textAlign: "center",
-      textAlignVertical: "center",
-      fontSize: 20,
-      color: theme.onPrimary,
-      fontWeight: "bold",
-    },
-  }));
+  const { stylesheet } = useStyle({
+    stylesheet: ({ theme, insets }) => ({
+      // main: {
+      //   paddingTop: insets.top + 20,
+      //   flexGrow: 1,
+      //   justifyContent: "space-between",
+      //   height: "100%",
+      // },
+      title: {
+        marginTop: insets.top + 20,
+        paddingHorizontal: Math.max(insets.left, insets.top / 2),
+        fontSize: 40,
+        fontFamily: "Inter_700Bold",
+        color: theme.surface.on.hex,
+        // flex: 1,
+        flexGrow: 3,
+        height: "10%",
+      },
+    }),
+  });
 
   return (
-    <View style={styles.main}>
-      <Text style={styles.title}>Mutiny</Text>
-      <View style={styles.buttonContainer}>
+    <>
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Text style={stylesheet.title}>Mutiny</Text>
+      <ButtonDrawerFixed>
         <Link href="/sign-in" asChild>
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Sign In</Text>
-          </Pressable>
+          <Button title="Sign In" />
         </Link>
         <Link href="/sign-up" asChild>
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Sign Up</Text>
-          </Pressable>
+          <Button title="Sign Up" />
         </Link>
-      </View>
-    </View>
+      </ButtonDrawerFixed>
+    </>
   );
 }

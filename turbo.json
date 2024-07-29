@@ -13,9 +13,11 @@
     },
     "start": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "interactive": true
     },
     "build": {
+      "dependsOn": ["^build"],
       "outputs": [
         "dist/**"
       ]

@@ -99,12 +99,14 @@ export function Style({
 }) {
   let style: Style;
 
+  const styleContext = useContext(StyleContext);
+
   if (reset) {
     style = {};
   } else {
     style = mergeStyles(
       [
-        useContext(StyleContext),
+        styleContext,
         {
           accent,
           font: {

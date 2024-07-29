@@ -9,6 +9,7 @@
     "./expo": "./expo.js"
   },
   "devDependencies": {
+    "@eslint/compat": "^1.1.1",
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.7.0",
     "@tanstack/eslint-plugin-query": "^5.51.12",

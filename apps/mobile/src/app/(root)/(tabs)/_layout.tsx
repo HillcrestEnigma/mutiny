@@ -2,7 +2,7 @@ import { Redirect, Tabs } from "expo-router";
 import Icon from "@expo/vector-icons/FontAwesome6";
 import { useStyle } from "@/lib/hooks/style";
 import { Pill } from "@/lib/components/pill";
-import { useAuthenticatedSession } from "@repo/hook/query";
+import { useAuthenticatedProfile } from "@repo/hook/query";
 
 function TabBarPill(
   iconName: string,
@@ -39,13 +39,13 @@ export default function TabLayout() {
     }),
   });
 
-  const { isLoading, isSuccess: isSignedIn } = useAuthenticatedSession();
+  const { isLoading, isSuccess: profileExists } = useAuthenticatedProfile();
 
   if (isLoading) {
     return null;
   }
 
-  if (!isSignedIn) {
+  if (!profileExists) {
     return <Redirect href="/auth" />;
   }
 

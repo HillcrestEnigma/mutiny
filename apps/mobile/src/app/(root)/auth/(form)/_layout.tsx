@@ -29,6 +29,10 @@ export default function AuthFormLayout() {
       >
         <Stack.Screen name="sign-in" options={{ title: "Sign In" }} />
         <Stack.Screen name="sign-up" options={{ title: "Sign Up" }} />
+        <Stack.Screen
+          name="create-profile"
+          options={{ title: "Create Profile", presentation: "modal" }}
+        />
       </Stack>
     </View>
   );

@@ -22,7 +22,7 @@ export default function SignIn() {
         unauthorized: "Invalid username, email, or password",
       }),
       onSuccess: () => {
-        router.replace("/");
+        router.replace("/auth/create-profile");
       },
     }),
   );

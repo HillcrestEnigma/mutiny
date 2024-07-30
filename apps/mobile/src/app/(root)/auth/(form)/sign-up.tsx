@@ -20,7 +20,7 @@ export default function SignUp() {
     createUser(data, {
       onError: handleMutationError(form.setError),
       onSuccess: () => {
-        router.replace("/");
+        router.replace("/auth/create-profile");
       },
     }),
   );

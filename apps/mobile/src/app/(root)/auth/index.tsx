@@ -1,7 +1,8 @@
 import { useStyle } from "@/lib/hooks/style";
 import { Text } from "react-native";
-import { Link } from "expo-router";
+import { Link, Redirect } from "expo-router";
 import { Button, ButtonDrawerFixed } from "@/lib/components/button";
+import { useAuthenticatedSession } from "@repo/hook/query";
 
 export default function Index() {
   const { stylesheet } = useStyle({
@@ -18,6 +19,12 @@ export default function Index() {
       },
     }),
   });
+
+  const { isSuccess: isLoggedIn } = useAuthenticatedSession();
+
+  if (!isLoggedIn) {
+    return <Redirect href="/auth/create-profile" />;
+  }
 
   return (
     <>

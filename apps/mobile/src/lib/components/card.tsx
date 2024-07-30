@@ -1,6 +1,6 @@
 import { View, type DimensionValue } from "react-native";
 import { type ReactNode } from "react";
-import { Style, useStyle } from "../hooks/style";
+import { Style, useStyle } from "@/lib/hooks/style";
 import { Text } from "./text";
 
 interface CardProps {
@@ -35,7 +35,7 @@ interface CardTitleProps {
   fontSize?: number;
 }
 
-export function CardTitle({ title, flex = 30, fontSize = 30 }: CardTitleProps) {
+export function CardTitle({ title, flex, fontSize = 30 }: CardTitleProps) {
   const { stylesheet } = useStyle({
     stylesheet: ({ style }) => ({
       container: {

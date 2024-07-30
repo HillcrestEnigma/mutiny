@@ -8,6 +8,8 @@ interface BaseColor {
   hex: ColorHex;
 }
 
+export type AccentColorRole = "primary" | "secondary" | "tertiary" | "error";
+
 export interface AccentColor extends BaseColor {
   on: BaseColor;
   container: BaseColor & {

@@ -1,5 +1,5 @@
 import { Text as ReactNativeText, type TextProps } from "react-native";
-import { useStyle, type FontStyle } from "../hooks/style";
+import { useStyle, type FontStyle } from "@/lib/hooks/style";
 
 function resolveFontFamily({ family, weight }: FontStyle) {
   switch (family) {
@@ -24,14 +24,16 @@ function resolveFontFamily({ family, weight }: FontStyle) {
 export function Text({ children, style: styleProp, ...props }: TextProps) {
   const { stylesheet } = useStyle({
     stylesheet: ({ style }) => ({
-      regular: {
+      text: {
         fontFamily: resolveFontFamily(style.font),
+        fontSize: style.font.size,
+        color: style.accent.on.hex,
       },
     }),
   });
 
   return (
-    <ReactNativeText style={[stylesheet.regular, styleProp]} {...props}>
+    <ReactNativeText style={[stylesheet.text, styleProp]} {...props}>
       {children}
     </ReactNativeText>
   );

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMutinyClient } from "../context";
 import type { UserCreatePayload } from "@repo/schema";
 
@@ -13,10 +13,19 @@ export function useAuthenticatedUser() {
 }
 
 export function useCreateUser() {
+  const query = useQueryClient();
   const client = useMutinyClient();
 
   return useMutation({
     mutationFn: async (payload: UserCreatePayload) =>
       client.createUser(payload),
+    onSuccess: () => {
+      query.invalidateQueries({
+        queryKey: ["user"],
+      });
+      query.invalidateQueries({
+        queryKey: ["session"],
+      });
+    },
   });
 }

@@ -3,28 +3,26 @@ import {
   View,
   type TextInputProps as ReactNativeTextInputProps,
 } from "react-native";
-import { useStyle } from "../../hooks/style";
-import type { AccentColor } from "../../color";
+import { Style, useStyle } from "@/lib/hooks/style";
 import {
   Controller,
   useFormContext,
   type FieldValues,
   type Path,
 } from "react-hook-form";
-import { Text } from "../text";
+import { Text } from "@/lib/components/text";
+import { ErrorMessage } from "@hookform/error-message";
+import { Pill } from "@/lib/components/pill";
 
-export function TextInput<FormValues extends FieldValues>({
+export function TextInput<FormInputs extends FieldValues>({
   name,
   label,
-  rules,
-  flex = 100,
+  flex,
   ...props
 }: ReactNativeTextInputProps & {
-  name: Path<FormValues>;
+  name: Path<FormInputs>;
   label: string;
-  rules?: Record<string, unknown>;
   flex?: number;
-  color?: AccentColor;
 }) {
   const { stylesheet, style } = useStyle({
     stylesheet: ({ theme, style }) => ({
@@ -34,29 +32,21 @@ export function TextInput<FormValues extends FieldValues>({
         maxHeight: 100,
       },
       textContainer: {
-        flex: 3,
+        // flex: 3,
         flexDirection: "row",
         justifyContent: "space-between",
+        justifyItems: "flex-start",
         alignItems: "center",
+        flexWrap: "wrap",
+        rowGap: 5,
       },
       label: {
         color: style.accent.hex,
         fontSize: 20,
       },
-      errorPill: {
-        paddingHorizontal: 8,
-        minHeight: 21,
-        backgroundColor: theme.error.hex,
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 90,
-      },
-      errorText: {
-        color: theme.error.on.hex,
-        fontSize: 12,
-      },
       textInput: {
-        flex: 5,
+        // flex: 5,
+        minHeight: 50,
         paddingHorizontal: 20,
         fontSize: 20,
         backgroundColor: style.accent.container.hex,
@@ -68,21 +58,9 @@ export function TextInput<FormValues extends FieldValues>({
     }),
   });
 
-  const {
-    control,
-    formState: { errors },
-  } = useFormContext();
+  const form = useFormContext<FormInputs>();
 
-  let error: string | null = null;
-
-  switch (errors?.[name]?.type) {
-    case "required":
-      error = "Required";
-      break;
-    case "maxLength":
-      error = "Too Long";
-      break;
-  }
+  const error = form.formState.errors?.[name];
 
   return (
     <View style={stylesheet.container}>
@@ -90,16 +68,18 @@ export function TextInput<FormValues extends FieldValues>({
         <View>
           <Text style={stylesheet.label}>{label}</Text>
         </View>
-        {error && (
-          <View style={stylesheet.errorPill}>
-            <Text style={stylesheet.errorText}>{error}</Text>
-          </View>
-        )}
+        {error ? (
+          <Style accent="error">
+            <ErrorMessage
+              name={name}
+              render={({ message }) => <Pill>{message}</Pill>}
+            />
+          </Style>
+        ) : null}
       </View>
       <Controller
         name={name}
-        control={control}
-        rules={rules}
+        control={form.control}
         render={({ field }) => (
           <ReactNativeTextInput
             style={stylesheet.textInput}

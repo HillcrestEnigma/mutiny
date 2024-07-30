@@ -5,7 +5,7 @@ import {
   type PressableProps,
 } from "react-native";
 import { forwardRef, type ReactNode } from "react";
-import { Style, useStyle } from "../hooks/style";
+import { Style, useStyle } from "@/lib/hooks/style";
 import { Text } from "./text";
 
 interface ButtonProps extends PressableProps {
@@ -14,12 +14,12 @@ interface ButtonProps extends PressableProps {
 }
 
 export const Button = forwardRef<View, ButtonProps>(
-  ({ title, onPress, flex = 100 }, ref) => {
+  ({ title, onPress, flex }, ref) => {
     const { stylesheet } = useStyle({
       stylesheet: ({ style }) => ({
         button: {
           flex,
-          minHeight: 30,
+          minHeight: 50,
           maxHeight: 80,
           backgroundColor: style.accent.hex,
           borderRadius: 90,
@@ -51,12 +51,12 @@ interface ButtonDrawerFixedProps {
 
 export function ButtonDrawerFixed({
   children,
-  height = "30%",
+  height,
 }: ButtonDrawerFixedProps) {
   const { stylesheet } = useStyle({
-    stylesheet: ({ style, insets }) => ({
+    stylesheet: ({ style }) => ({
       container: {
-        padding: insets.max,
+        padding: 40,
         borderTopLeftRadius: 45,
         borderTopRightRadius: 45,
         // flex: 1,

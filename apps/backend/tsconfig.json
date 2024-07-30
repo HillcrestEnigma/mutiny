@@ -1,5 +1,10 @@
 {
   "extends": "@repo/config-typescript",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
   "include": [
     "src",
     "tests",

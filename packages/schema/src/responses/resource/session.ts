@@ -1,6 +1,6 @@
-import { SessionId } from "../fields";
-import { Session } from "../models/session";
-import { GenericResponse } from "./generic";
+import { SessionId } from "../../fields";
+import { Session } from "../../models/session";
+import { GenericResponse } from "../meta/generic";
 import { z } from "zod";
 
 export const SessionResponse = GenericResponse.extend({
@@ -14,3 +14,8 @@ export const AuthenticatedSessionResponse = GenericResponse.extend({
 export type AuthenticatedSessionResponse = z.infer<
   typeof AuthenticatedSessionResponse
 >;
+
+export const SessionCreateResponse = SessionResponse.describe(
+  "Successful Session Creation Response",
+);
+export type SessionCreateResponse = SessionResponse;

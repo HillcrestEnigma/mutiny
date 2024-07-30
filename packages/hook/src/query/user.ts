@@ -26,6 +26,9 @@ export function useCreateUser() {
       query.invalidateQueries({
         queryKey: ["session"],
       });
+      query.invalidateQueries({
+        queryKey: ["profile"],
+      });
     },
   });
 }

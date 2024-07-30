@@ -3,10 +3,12 @@ import { sessionRoutes } from "./session";
 import { userRoutes } from "./user";
 import { config } from "../../lib/config";
 import { APIInfoResponse } from "@repo/schema";
+import { profileRoutes } from "./profile";
 
 export async function apiRoutes(app: FastifyInstance) {
   app.register(userRoutes);
   app.register(sessionRoutes);
+  app.register(profileRoutes);
 
   app.get(
     "/",

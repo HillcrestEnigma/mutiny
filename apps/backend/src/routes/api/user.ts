@@ -1,12 +1,12 @@
 import { type FastifyInstance } from "fastify";
 import {
   UserCreatePayload,
-  SessionResponse,
   ValidationErrorResponse,
   AuthenticatedUserResponse,
   ConflictErrorResponse,
   FastifyErrorResponse,
   UnauthorizedErrorResponse,
+  UserCreateResponse,
 } from "@repo/schema";
 import { type FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { lucia } from "../../lib/lucia";
@@ -32,7 +32,6 @@ export const userRoutes: FastifyPluginAsyncZod = async (
         response: {
           200: AuthenticatedUserResponse,
           401: UnauthorizedErrorResponse,
-          422: ValidationErrorResponse,
           default: FastifyErrorResponse,
         },
       },
@@ -45,7 +44,7 @@ export const userRoutes: FastifyPluginAsyncZod = async (
     },
   );
 
-  app.post(
+  app.put(
     "/user",
     {
       schema: {
@@ -54,7 +53,7 @@ export const userRoutes: FastifyPluginAsyncZod = async (
         tags: ["user"],
         body: UserCreatePayload,
         response: {
-          201: SessionResponse,
+          201: UserCreateResponse,
           409: ConflictErrorResponse,
           422: ValidationErrorResponse,
           default: FastifyErrorResponse,

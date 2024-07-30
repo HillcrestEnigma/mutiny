@@ -1,8 +1,8 @@
 import { Client, type ClientQueryMethod } from "../client";
 import {
   AuthenticatedUserResponse,
-  SessionResponse,
   UserCreatePayload,
+  UserCreateResponse,
 } from "@repo/schema";
 
 declare module "../client" {
@@ -19,7 +19,7 @@ Client.prototype.getAuthenticatedUser = async function () {
 };
 
 Client.prototype.createUser = async function (body: UserCreatePayload) {
-  const result = SessionResponse.parse(await this.post("/user", body));
+  const result = UserCreateResponse.parse(await this.put("/user", body));
 
   await this.setSession(result.sessionId);
 };

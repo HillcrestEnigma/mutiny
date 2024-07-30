@@ -6,15 +6,19 @@ import {
 import fp from "fastify-plugin";
 import fastifyAuth, { type FastifyAuthFunction } from "@fastify/auth";
 import { lucia } from "../lucia";
-import { User, Session } from "@repo/schema";
+import { User, Session, type Profile } from "@repo/schema";
 import { prisma } from "@repo/db";
 import { UnauthorizedError } from "@repo/error";
 
 declare module "fastify" {
-  interface FastifyRequest {
-    user: User | null;
-    session: Session | null;
+  interface AuthenticatedRequestData {
+    user?: Required<User>;
+    session?: Required<Session>;
+    profile?: Required<Profile>;
   }
+
+  interface FastifyRequest extends AuthenticatedRequestData {}
+
   interface FastifyInstance {
     authRequired: { onRequest: preHandlerHookHandler };
   }
@@ -25,9 +29,6 @@ export const authPlugin: FastifyPluginAsync = fp(
     await app.register(fastifyAuth);
 
     app.addHook("onRequest", async (request) => {
-      request.session = null;
-      request.user = null;
-
       if (!request.headers.authorization) {
         return;
       }
@@ -57,8 +58,18 @@ export const authPlugin: FastifyPluginAsync = fp(
         return;
       }
 
+      const profile = await prisma.profile.findUnique({
+        where: {
+          userId: session.userId,
+        },
+      });
+
       request.user = user;
       request.session = session;
+      if (profile) {
+        request.profile = profile;
+      }
+
       return;
     });
 

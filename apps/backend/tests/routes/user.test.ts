@@ -1,12 +1,12 @@
 import { describe, expect, test, inject } from "vitest";
 import {
-  SessionResponse,
   AuthenticatedUserResponse,
   ValidationErrorResponse,
   ConflictErrorResponse,
   UnauthorizedErrorResponse,
+  UserCreateResponse,
 } from "@repo/schema";
-import { app } from "../build";
+import { app } from "../utils/build";
 
 const scenario = inject("scenario");
 
@@ -66,7 +66,7 @@ describe("Authentication", async () => {
 describe("Sign Up", async () => {
   test("Signup a new user", async () => {
     const response = await app.inject({
-      method: "POST",
+      method: "PUT",
       url: "/api/user",
       payload: {
         username: "testuser",
@@ -77,14 +77,14 @@ describe("Sign Up", async () => {
 
     expect(response.statusCode).toBe(201);
 
-    const result = SessionResponse.parse(response.json());
+    const result = UserCreateResponse.parse(response.json());
 
     expect(result.sessionId).toHaveLength(40);
   });
 
   test("Reject signup with bad username", async () => {
     const response = await app.inject({
-      method: "POST",
+      method: "PUT",
       url: "/api/user",
       payload: {
         username: "_Testuser@#^$%&^$",
@@ -103,7 +103,7 @@ describe("Sign Up", async () => {
 
   test("Reject signup with bad email", async () => {
     const response = await app.inject({
-      method: "POST",
+      method: "PUT",
       url: "/api/user",
       payload: {
         username: "goodusername",
@@ -122,7 +122,7 @@ describe("Sign Up", async () => {
 
   test("Reject signup with bad password", async () => {
     const response = await app.inject({
-      method: "POST",
+      method: "PUT",
       url: "/api/user",
       payload: {
         username: "goodusername",
@@ -141,7 +141,7 @@ describe("Sign Up", async () => {
 
   test("Reject signup with existing username and email", async () => {
     let response = await app.inject({
-      method: "POST",
+      method: "PUT",
       url: "/api/user",
       payload: {
         username: "sameusername",
@@ -153,7 +153,7 @@ describe("Sign Up", async () => {
     expect(response.statusCode).toBe(201);
 
     response = await app.inject({
-      method: "POST",
+      method: "PUT",
       url: "/api/user",
       payload: {
         username: "sameusername",
@@ -169,7 +169,7 @@ describe("Sign Up", async () => {
     expect(result.resource).toBe("username");
 
     response = await app.inject({
-      method: "POST",
+      method: "PUT",
       url: "/api/user",
       payload: {
         username: "anotherusername",

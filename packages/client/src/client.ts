@@ -1,6 +1,6 @@
 import { MutinyServerError } from "@repo/error";
 import semver from "semver";
-import type { JsonObject } from "type-fest";
+import type { Jsonifiable } from "type-fest";
 import { ResponseParseError, VersionMismatchError } from "./errors";
 import { APIInfoResponse } from "@repo/schema";
 
@@ -95,8 +95,8 @@ export class Client {
   async fetch(
     path: string,
     method: HTTPRequestMethod,
-    body?: JsonObject,
-  ): Promise<JsonObject> {
+    body?: Jsonifiable,
+  ): Promise<Jsonifiable> {
     const headers = await this.headers(body !== undefined);
 
     const response = await fetch(this.url(path), {
@@ -118,15 +118,15 @@ export class Client {
     return await this.fetch(path, HTTPRequestMethod.GET);
   }
 
-  async post(path = "", object?: JsonObject) {
+  async post(path = "", object?: Jsonifiable) {
     return await this.fetch(path, HTTPRequestMethod.POST, object);
   }
 
-  async put(path = "", object?: JsonObject) {
+  async put(path = "", object?: Jsonifiable) {
     return await this.fetch(path, HTTPRequestMethod.PUT, object);
   }
 
-  async delete(path = "", object?: JsonObject) {
+  async delete(path = "", object?: Jsonifiable) {
     return await this.fetch(path, HTTPRequestMethod.DELETE, object);
   }
 

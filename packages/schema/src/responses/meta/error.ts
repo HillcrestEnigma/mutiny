@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { GenericResponse } from "./generic";
-import { ErrorType } from "../fields";
+import { ErrorType } from "../../fields";
 
 export const GenericErrorResponse = GenericResponse.extend({
   message: z.string(),

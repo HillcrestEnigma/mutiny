@@ -1,7 +1,6 @@
 {
   "extends": "@repo/config-typescript",
   "compilerOptions": {
-    // "moduleResolution": "Node",
     "paths": {
       "@/*": ["./src/*"]
     }

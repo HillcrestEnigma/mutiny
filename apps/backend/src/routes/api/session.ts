@@ -1,13 +1,13 @@
 import { type FastifyInstance } from "fastify";
 import {
   SessionCreatePayload,
-  SessionResponse,
   SessionDeletePayload,
-  GenericResponse,
   AuthenticatedSessionResponse,
   ValidationErrorResponse,
   UnauthorizedErrorResponse,
   FastifyErrorResponse,
+  SessionCreateResponse,
+  DeletedResponse,
 } from "@repo/schema";
 import { type FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { lucia } from "../../lib/lucia";
@@ -33,7 +33,6 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
         response: {
           200: AuthenticatedSessionResponse,
           401: UnauthorizedErrorResponse,
-          422: ValidationErrorResponse,
           default: FastifyErrorResponse,
         },
       },
@@ -55,7 +54,7 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
         tags: ["session"],
         body: SessionCreatePayload,
         response: {
-          201: SessionResponse,
+          201: SessionCreateResponse,
           401: UnauthorizedErrorResponse,
           422: ValidationErrorResponse,
           default: FastifyErrorResponse,
@@ -109,7 +108,7 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
         tags: ["session"],
         body: SessionDeletePayload,
         response: {
-          200: GenericResponse,
+          204: DeletedResponse,
           422: ValidationErrorResponse,
           default: FastifyErrorResponse,
         },
@@ -120,7 +119,7 @@ export const sessionRoutes: FastifyPluginAsyncZod = async (
 
       await lucia.invalidateSession(sessionId);
 
-      reply.code(200);
+      reply.code(204);
       return {};
     },
   );

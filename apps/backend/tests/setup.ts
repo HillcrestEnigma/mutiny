@@ -1,6 +1,6 @@
 import { prisma } from "@repo/db";
 import type { GlobalSetupContext } from "vitest/node";
-import { scenario, bakeScenario } from "./scenario";
+import { scenario, bakeScenario } from "./utils/scenario";
 
 declare module "vitest" {
   export interface ProvidedContext {

@@ -1,16 +1,15 @@
-import { generateUserId, hashPassword } from "../src/lib/utils/auth";
-import { Email, Session, User } from "@repo/schema";
+import { generateUserId, hashPassword } from "../../src/lib/utils/auth";
+import { Email, Session, User, type Profile } from "@repo/schema";
 import { prisma } from "@repo/db";
 
 type ScenarioPlanUser = User & {
-  emails: (Partial<Email> & {
-    address: string;
+  emails: (Email & {
     primary: boolean;
   })[];
-  sessions: (Partial<Session> & {
-    id: string;
+  sessions: (Session & {
     expiresAt: Date;
   })[];
+  profile?: Profile;
 };
 
 type ScenarioUser = ScenarioPlanUser & {
@@ -22,10 +21,10 @@ const scenarioPlan: {
 } = {
   users: [
     {
-      username: "existing_user",
+      username: "existing_user_1",
       emails: [
         {
-          address: "existing_user@example.com",
+          address: "existing_user_1@example.com",
           primary: true,
         },
       ],
@@ -35,6 +34,11 @@ const scenarioPlan: {
           expiresAt: new Date(Date.now() + 1000 * 60 * 60),
         },
       ],
+      profile: {
+        name: "Existing User 1",
+        bio: "This is an existing user.",
+        birthday: new Date(2000, 1, 1),
+      },
     },
   ],
 };
@@ -53,11 +57,7 @@ export const scenario: {
 export const bakeScenario = async () => {
   const passwordHash = await hashPassword("password");
 
-  await prisma.$transaction([
-    prisma.email.deleteMany(),
-    prisma.session.deleteMany(),
-    prisma.user.deleteMany(),
-  ]);
+  await prisma.$transaction([prisma.user.deleteMany()]);
 
   await Promise.all(
     scenario.users.map(async (user) => {
@@ -73,6 +73,9 @@ export const bakeScenario = async () => {
           },
           sessions: {
             create: user.sessions,
+          },
+          profile: {
+            create: user.profile,
           },
         },
       });

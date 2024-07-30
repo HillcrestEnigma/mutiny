@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { SessionId } from "../fields";
+import { Date, SessionId } from "../fields";
 
 export const Session = z.object({
   id: SessionId,
-  expiresAt: z.coerce.date().optional(),
+  expiresAt: Date.optional(),
   fresh: z.boolean().optional(),
   userId: z.string().optional(),
 });

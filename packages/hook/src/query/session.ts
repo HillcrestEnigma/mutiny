@@ -26,6 +26,9 @@ export function useCreateSession() {
       query.invalidateQueries({
         queryKey: ["session"],
       });
+      query.invalidateQueries({
+        queryKey: ["profile"],
+      });
     },
   });
 }
@@ -42,6 +45,9 @@ export function useDeleteAuthenticatedSession() {
       });
       query.invalidateQueries({
         queryKey: ["session"],
+      });
+      query.invalidateQueries({
+        queryKey: ["profile"],
       });
     },
   });

@@ -28,6 +28,8 @@ export const errorPlugin: FastifyPluginAsync = fp(
           message: error.message,
         });
       } else {
+        app.log.error(error);
+
         return reply.code(500).send({
           error: "internal",
           message: "Unknown Error",

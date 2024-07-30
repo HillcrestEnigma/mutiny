@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test, inject } from "vitest";
 import {
   AuthenticatedSessionResponse,
-  SessionResponse,
+  SessionCreateResponse,
   UnauthorizedErrorResponse,
   ValidationErrorResponse,
 } from "@repo/schema";
-import { app } from "../build";
+import { app } from "../utils/build";
 
 const scenario = inject("scenario");
 
@@ -144,7 +144,7 @@ describe("Sign Out", async () => {
       },
     });
 
-    const result = SessionResponse.parse(response.json());
+    const result = SessionCreateResponse.parse(response.json());
 
     sessionId = result.sessionId;
   });
@@ -158,7 +158,7 @@ describe("Sign Out", async () => {
       },
     });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(204);
 
     response = await app.inject({
       method: "GET",

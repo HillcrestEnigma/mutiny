@@ -15,15 +15,20 @@ export * from "./fields";
 
 export * from "./models/user";
 export * from "./models/session";
+export * from "./models/profile";
 
 export * from "./payloads/user";
 export * from "./payloads/session";
+export * from "./payloads/profile";
 
 export * from "./forms/user";
 export * from "./forms/session";
+export * from "./forms/profile";
 
-export * from "./responses/generic";
-export * from "./responses/error";
-export * from "./responses/info";
-export * from "./responses/user";
-export * from "./responses/session";
+export * from "./responses/meta/generic";
+export * from "./responses/meta/error";
+export * from "./responses/meta/info";
+
+export * from "./responses/resource/user";
+export * from "./responses/resource/session";
+export * from "./responses/resource/profile";

@@ -17,6 +17,7 @@ export type SessionSetter = (sessionToken: Session) => Promise<void>;
 
 export interface ClientOptions {
   baseURL: string;
+  stateless?: boolean;
   sessionGetter?: SessionGetter;
   sessionSetter?: SessionSetter;
 }
@@ -27,13 +28,18 @@ export type ClientQueryMethod<R, A extends Array<unknown> = []> = (
 
 export class Client {
   baseURL: string;
-  sessionToken: Session = null;
+  compatibleServerVersion = "0.1.0";
+  stateless: boolean = false;
   sessionGetter: SessionGetter = async () => null;
   sessionSetter: SessionSetter = async () => undefined;
-  compatibleServerVersion = "0.1.0";
+  sessionToken: Session = null;
 
   constructor(options: ClientOptions) {
     this.baseURL = options.baseURL;
+
+    if (options?.stateless) {
+      this.stateless = options.stateless;
+    }
 
     if (options?.sessionGetter) {
       this.sessionGetter = options.sessionGetter;
@@ -43,25 +49,35 @@ export class Client {
       this.sessionSetter = options.sessionSetter;
     }
 
-    this.sessionGetter().then((sessionToken) => {
-      this.sessionToken = sessionToken;
-    });
+    if (!this.stateless) {
+      this.sessionGetter().then((sessionToken) => {
+        this.sessionToken = sessionToken;
+      });
+    }
 
     this.checkServer();
   }
 
   async setSession(token: Session) {
-    this.sessionToken = token;
+    if (!this.stateless) {
+      this.sessionToken = token;
+    }
 
     await this.sessionSetter(token);
   }
 
   async session() {
-    if (!this.sessionToken) {
-      this.sessionToken = await this.sessionGetter();
+    let sessionToken = this.sessionToken;
+
+    if (this.stateless || !sessionToken) {
+      sessionToken = await this.sessionGetter();
+
+      if (!this.stateless) {
+        this.sessionToken = sessionToken;
+      }
     }
 
-    return this.sessionToken;
+    return sessionToken;
   }
 
   url(path: string) {
@@ -104,6 +120,10 @@ export class Client {
       headers,
       body: JSON.stringify(body),
     });
+
+    if (response.status === 204) {
+      return {};
+    }
 
     const result = await response.json();
 

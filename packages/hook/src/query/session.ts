@@ -7,7 +7,9 @@ export function useAuthenticatedSession() {
 
   return useQuery({
     queryKey: ["session"],
-    queryFn: async () => client.getAuthenticatedSession(),
+    queryFn: async () => {
+      return await client.getAuthenticatedSession();
+    },
     retry: false,
   });
 }
@@ -17,18 +19,11 @@ export function useCreateSession() {
   const client = useMutinyClient();
 
   return useMutation({
-    mutationFn: async (payload: SessionCreatePayload) =>
-      client.createSession(payload),
+    mutationFn: async (payload: SessionCreatePayload) => {
+      await client.createSession(payload);
+    },
     onSuccess: () => {
-      query.invalidateQueries({
-        queryKey: ["user"],
-      });
-      query.invalidateQueries({
-        queryKey: ["session"],
-      });
-      query.invalidateQueries({
-        queryKey: ["profile"],
-      });
+      query.clear();
     },
   });
 }
@@ -38,17 +33,11 @@ export function useDeleteAuthenticatedSession() {
   const client = useMutinyClient();
 
   return useMutation({
-    mutationFn: async () => client.deleteAuthenticatedSession(),
+    mutationFn: async () => {
+      await client.deleteAuthenticatedSession();
+    },
     onSuccess: () => {
-      query.invalidateQueries({
-        queryKey: ["user"],
-      });
-      query.invalidateQueries({
-        queryKey: ["session"],
-      });
-      query.invalidateQueries({
-        queryKey: ["profile"],
-      });
+      query.clear();
     },
   });
 }

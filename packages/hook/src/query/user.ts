@@ -7,7 +7,9 @@ export function useAuthenticatedUser() {
 
   return useQuery({
     queryKey: ["user"],
-    queryFn: async () => client.getAuthenticatedUser(),
+    queryFn: async () => {
+      return await client.getAuthenticatedUser();
+    },
     retry: false,
   });
 }
@@ -17,18 +19,11 @@ export function useCreateUser() {
   const client = useMutinyClient();
 
   return useMutation({
-    mutationFn: async (payload: UserCreatePayload) =>
-      client.createUser(payload),
+    mutationFn: async (payload: UserCreatePayload) => {
+      await client.createUser(payload);
+    },
     onSuccess: () => {
-      query.invalidateQueries({
-        queryKey: ["user"],
-      });
-      query.invalidateQueries({
-        queryKey: ["session"],
-      });
-      query.invalidateQueries({
-        queryKey: ["profile"],
-      });
+      query.clear();
     },
   });
 }

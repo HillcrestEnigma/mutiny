@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Slot } from "expo-router";
+import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import {
   Inter_100Thin,
@@ -47,7 +47,10 @@ export default function RootLayout() {
       }}
     >
       <ThemeProvider value={reactNavigationTheme[colorscheme]}>
-        <Slot />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="auth" />
+        </Stack>
       </ThemeProvider>
     </MutinyProvider>
   );

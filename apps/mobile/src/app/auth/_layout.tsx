@@ -11,7 +11,9 @@ export default function AuthFormLayout() {
       main: {
         alignItems: "center",
         justifyContent: "center",
-        margin: 20,
+        padding: 20,
+        height: "100%",
+        width: "100%",
       },
     }),
   });
@@ -27,11 +29,12 @@ export default function AuthFormLayout() {
           contentStyle: stylesheet.main,
         }}
       >
+        <Stack.Screen name="index" options={{ title: "Mutiny" }} />
         <Stack.Screen name="sign-in" options={{ title: "Sign In" }} />
         <Stack.Screen name="sign-up" options={{ title: "Sign Up" }} />
         <Stack.Screen
           name="create-profile"
-          options={{ title: "Create Profile", presentation: "modal" }}
+          options={{ title: "Create Profile" }}
         />
       </Stack>
     </View>

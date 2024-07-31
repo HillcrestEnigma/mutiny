@@ -7,7 +7,9 @@ export function useAuthenticatedProfile() {
 
   return useQuery({
     queryKey: ["profile"],
-    queryFn: async () => client.getAuthenticatedProfile(),
+    queryFn: async () => {
+      return await client.getAuthenticatedProfile();
+    },
     retry: false,
   });
 }
@@ -17,10 +19,11 @@ export function useUpsertProfile() {
   const client = useMutinyClient();
 
   return useMutation({
-    mutationFn: async (payload: ProfileUpsertPayload) =>
-      client.upsertProfile(payload),
+    mutationFn: async (payload: ProfileUpsertPayload) => {
+      await client.upsertProfile(payload);
+    },
     onSuccess: () => {
-      query.invalidateQueries({
+      return query.invalidateQueries({
         queryKey: ["profile"],
       });
     },

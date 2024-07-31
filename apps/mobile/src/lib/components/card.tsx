@@ -1,22 +1,20 @@
 import { View, type DimensionValue } from "react-native";
 import { type ReactNode } from "react";
-import { Style, useStyle } from "@/lib/hooks/style";
+import { useStyle } from "@/lib/hooks/style";
 import { Text } from "./text";
 
 interface CardProps {
   children: ReactNode;
   height?: DimensionValue;
   gap?: number;
-  style?: Style;
 }
 
-export function Card({ children, height, gap = 10 }: CardProps) {
+export function Card({ children, height, gap = 20 }: CardProps) {
   const { stylesheet } = useStyle({
     stylesheet: ({ style }) => ({
       card: {
         height,
         gap,
-        margin: 20,
         padding: 30,
         borderRadius: 45,
         justifyContent: "space-between",
@@ -27,6 +25,25 @@ export function Card({ children, height, gap = 10 }: CardProps) {
   });
 
   return <View style={stylesheet.card}>{children}</View>;
+}
+
+interface CardSectionProps {
+  flex?: number;
+  gap?: number;
+  children: ReactNode;
+}
+
+export function CardSection({ flex, gap, children }: CardSectionProps) {
+  const { stylesheet } = useStyle({
+    stylesheet: () => ({
+      container: {
+        flex,
+        gap,
+      },
+    }),
+  });
+
+  return <View style={stylesheet.container}>{children}</View>;
 }
 
 interface CardTitleProps {

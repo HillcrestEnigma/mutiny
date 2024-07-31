@@ -11,9 +11,9 @@
     "format": "prettier . --write"
   },
   "exports": {
-    "./provider": {
-      "types": "./src/provider.tsx",
-      "default": "./dist/src/provider.js"
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/src/index.js"
     },
     "./query": {
       "types": "./src/query/index.ts",

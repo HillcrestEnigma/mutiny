@@ -22,10 +22,8 @@ export function useUpsertProfile() {
     mutationFn: async (payload: ProfileUpsertPayload) => {
       await client.upsertProfile(payload);
     },
-    onSuccess: () => {
-      return query.invalidateQueries({
-        queryKey: ["profile"],
-      });
+    onSuccess: (_, payload) => {
+      query.setQueryData(["profile"], payload);
     },
   });
 }

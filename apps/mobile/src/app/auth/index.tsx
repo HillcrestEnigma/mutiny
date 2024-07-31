@@ -2,8 +2,8 @@ import { useStyle } from "@/lib/hooks/style";
 import { View } from "react-native";
 import { Link, Redirect } from "expo-router";
 import { Button } from "@/lib/components/button";
-import { useAuthenticatedSession } from "@repo/hook/query";
 import { Card } from "@/lib/components/card";
+import { useAuthenticatedSession } from "@repo/hook/query";
 
 export default function Index() {
   const { stylesheet } = useStyle({

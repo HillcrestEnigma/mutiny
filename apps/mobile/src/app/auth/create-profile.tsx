@@ -79,10 +79,8 @@ export default function CreateProfile() {
 
         <Button title="Submit" onPress={onSubmit} />
       </Card>
-
       <Card>
         <CardTitle title={`Not ${user?.username}?`} fontSize={24} />
-
         <Button title="Sign Out" onPress={signOut} />
       </Card>
     </View>

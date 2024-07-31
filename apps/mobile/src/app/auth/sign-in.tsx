@@ -8,11 +8,17 @@ import { SessionCreateForm } from "@repo/schema";
 import { useCreateSession } from "@repo/hook/query";
 import { handleMutationError } from "@/lib/utils/error";
 import { router } from "expo-router";
+import { useMutinyClient } from "@repo/hook";
+import { useRouterNavigate } from "@/lib/utils/navigate";
 
 export default function SignIn() {
+  const { navigateAbsolutely } = useRouterNavigate();
+
   const form = useForm<SessionCreateForm>({
     resolver: zodResolver(SessionCreateForm),
   });
+
+  const client = useMutinyClient();
 
   const { mutate: createSession } = useCreateSession();
 
@@ -21,8 +27,14 @@ export default function SignIn() {
       onError: handleMutationError(form.setError, {
         unauthorized: "Invalid username, email, or password",
       }),
-      onSuccess: () => {
-        router.replace("/auth");
+      onSuccess: async () => {
+        try {
+          await client.getAuthenticatedProfile();
+
+          router.replace("/");
+        } catch {
+          navigateAbsolutely("/auth/create-profile");
+        }
       },
     }),
   );

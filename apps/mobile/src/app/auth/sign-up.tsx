@@ -7,9 +7,11 @@ import { Form } from "@/lib/components/form";
 import { UserCreateForm } from "@repo/schema";
 import { useCreateUser } from "@repo/hook/query";
 import { handleMutationError } from "@/lib/utils/error";
-import { router } from "expo-router";
+import { useRouterNavigate } from "@/lib/utils/navigate";
 
 export default function SignUp() {
+  const { navigateAbsolutely } = useRouterNavigate();
+
   const form = useForm<UserCreateForm>({
     resolver: zodResolver(UserCreateForm),
   });
@@ -20,7 +22,7 @@ export default function SignUp() {
     createUser(data, {
       onError: handleMutationError(form.setError),
       onSuccess: () => {
-        router.replace("/auth");
+        navigateAbsolutely("/auth/create-profile");
       },
     }),
   );

@@ -2,6 +2,10 @@ import { useStyle } from "@/lib/hooks/style";
 import { Stack } from "expo-router";
 import { View } from "react-native";
 
+export const unstable_settings = {
+  initialRouteName: "index",
+};
+
 export default function AuthFormLayout() {
   const { stylesheet } = useStyle({
     stylesheet: () => ({

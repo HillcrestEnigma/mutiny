@@ -13,7 +13,7 @@ import { Form } from "@/lib/components/form";
 import { TextInput } from "@/lib/components/form/input/text";
 import { DateInput } from "@/lib/components/form/input/date";
 import { Button } from "@/lib/components/button";
-import { View } from "react-native";
+import { ScrollView } from "react-native";
 import { useStyle } from "@/lib/hooks/style";
 
 export default function CreateProfile() {
@@ -22,8 +22,9 @@ export default function CreateProfile() {
       container: {
         height: "100%",
         width: "100%",
-        flexDirection: "column",
-        justifyContent: "space-around",
+      },
+      main: {
+        gap: 20,
       },
     }),
   });
@@ -61,7 +62,10 @@ export default function CreateProfile() {
   };
 
   return (
-    <View style={stylesheet.container}>
+    <ScrollView
+      style={stylesheet.container}
+      contentContainerStyle={stylesheet.main}
+    >
       <Card>
         <CardSection>
           <CardTitle title="Create Your Profile" />
@@ -83,6 +87,6 @@ export default function CreateProfile() {
         <CardTitle title={`Not ${user?.username}?`} fontSize={24} />
         <Button title="Sign Out" onPress={signOut} />
       </Card>
-    </View>
+    </ScrollView>
   );
 }

@@ -2,8 +2,6 @@ import { describe, expect, test, inject } from "vitest";
 import {
   AuthenticatedProfileResponse,
   Profile,
-  UnauthorizedErrorResponse,
-  UserCreateResponse,
   ValidationErrorResponse,
 } from "@repo/schema";
 import { app } from "../utils/build";
@@ -12,63 +10,44 @@ const scenario = inject("scenario");
 
 describe("Reading a profile", async () => {
   test("Logged in user can see their profile details", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: "/api/profile",
-      headers: {
-        Authorization: `Bearer ${scenario.users[0].sessions[0].id}`,
+    const { json } = await app.injectGet("/api/profile", {
+      session: scenario.users[0].sessions[0].id,
+      expect: {
+        statusCode: 200,
       },
     });
 
-    expect(response.statusCode).toBe(200);
-
-    expect(
-      AuthenticatedProfileResponse.parse(response.json()).profile,
-    ).toStrictEqual(Profile.parse(scenario.users[0].profile));
+    expect(AuthenticatedProfileResponse.parse(json).profile).toStrictEqual(
+      Profile.parse(scenario.users[0].profile),
+    );
   });
 
   test("Anonymous users can't see their profile details", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: "/api/profile",
-      headers: {
-        Authorization: "Bearer invalid",
+    await app.injectGet("/api/profile", {
+      expect: {
+        statusCode: 401,
+        errorType: "unauthorized",
       },
     });
-
-    expect(response.statusCode).toBe(401);
-
-    expect(UnauthorizedErrorResponse.parse(response.json()).error).toBe(
-      "unauthorized",
-    );
   });
 });
 
 describe("Upserting a profile", async () => {
   test("Upserting a profile for a newly created user", async () => {
-    let response = await app.inject({
-      method: "PUT",
-      url: "/api/user",
-      payload: {
-        username: "testuser_withoutprofile",
-        email: "testuser_withoutprofile@example.com",
-        password: "password",
-      },
+    const userCreateResult = await app.createUser({
+      username: "testuser_withoutprofile",
+      email: "testuser_withoutprofile@example.com",
+      password: "password",
     });
-
-    const userCreateResult = UserCreateResponse.parse(response.json());
 
     const sessionId = userCreateResult.sessionId;
 
-    response = await app.inject({
-      method: "GET",
-      url: "/api/profile",
-      headers: {
-        Authorization: `Bearer ${sessionId}`,
+    await app.injectGet("/api/profile", {
+      session: sessionId,
+      expect: {
+        statusCode: 404,
       },
     });
-
-    expect(response.statusCode).toBe(404);
 
     let profile = {
       name: "testuser withoutprofile",
@@ -76,28 +55,20 @@ describe("Upserting a profile", async () => {
       bio: "This is a test user that used to have no profile.",
     };
 
-    response = await app.inject({
-      method: "PUT",
-      url: "/api/profile",
-      headers: {
-        Authorization: `Bearer ${sessionId}`,
-      },
-      payload: profile,
+    await app.upsertProfile({
+      profile,
+      session: sessionId,
+      statusCode: 201,
     });
 
-    expect(response.statusCode).toBe(201);
-
-    response = await app.inject({
-      method: "GET",
-      url: "/api/profile",
-      headers: {
-        Authorization: `Bearer ${sessionId}`,
+    let { json } = await app.injectGet("/api/profile", {
+      session: sessionId,
+      expect: {
+        statusCode: 200,
       },
     });
 
-    expect(response.statusCode).toBe(200);
-
-    let profileResult = AuthenticatedProfileResponse.parse(response.json());
+    let profileResult = AuthenticatedProfileResponse.parse(json);
 
     expect(profileResult.profile).toEqual(profile);
 
@@ -106,85 +77,91 @@ describe("Upserting a profile", async () => {
       bio: "This is a test user that now has profile.",
     };
 
-    response = await app.inject({
-      method: "PUT",
-      url: "/api/profile",
-      headers: {
-        Authorization: `Bearer ${sessionId}`,
-      },
-      payload: profile,
+    await app.upsertProfile({
+      profile,
+      session: sessionId,
+      statusCode: 204,
     });
 
-    expect(response.statusCode).toBe(204);
-
-    response = await app.inject({
-      method: "GET",
-      url: "/api/profile",
-      headers: {
-        Authorization: `Bearer ${sessionId}`,
+    ({ json } = await app.injectGet("/api/profile", {
+      session: sessionId,
+      expect: {
+        statusCode: 200,
       },
-    });
+    }));
 
-    expect(response.statusCode).toBe(200);
-
-    profileResult = AuthenticatedProfileResponse.parse(response.json());
+    profileResult = AuthenticatedProfileResponse.parse(json);
 
     expect(profileResult.profile).toEqual(profile);
   });
 
   test("Reject upserting a profile for an anonymous user", async () => {
-    const response = await app.inject({
-      method: "PUT",
-      url: "/api/profile",
-      headers: {
-        Authorization: `Bearer invalid`,
-      },
+    await app.injectPut("/api/profile", {
       payload: {
         name: "testanonuser withoutprofile",
         birthday: new Date(2010, 1, 1),
         bio: "This is a test user that is anonymous.",
       },
+      expect: {
+        statusCode: 401,
+        errorType: "unauthorized",
+      },
     });
-
-    expect(response.statusCode).toBe(401);
-
-    const result = UnauthorizedErrorResponse.parse(response.json());
-
-    expect(result.error).toBe("unauthorized");
   });
 
-  test("Reject upserting a valid profile for a user", async () => {
-    let response = await app.inject({
-      method: "PUT",
-      url: "/api/user",
-      payload: {
-        username: "testuser_withoutvalidprofile",
-        email: "testuser_withoutvalidprofile@example.com",
-        password: "password",
-      },
-    });
-
-    const userCreateResult = UserCreateResponse.parse(response.json());
-
-    const sessionId = userCreateResult.sessionId;
-
-    response = await app.inject({
-      method: "PUT",
-      url: "/api/profile",
-      headers: {
-        Authorization: `Bearer ${sessionId}`,
-      },
+  test("Reject upserting a profile with missing fields for a user", async () => {
+    const { json } = await app.injectPut("/api/profile", {
+      session: scenario.users[0].sessions[0].id,
       payload: {
         name: "invalid profile",
         bio: "This is a profile that is incomplete.",
       },
+      expect: {
+        statusCode: 422,
+        errorType: "validation",
+      },
     });
 
-    expect(response.statusCode).toBe(422);
+    const result = ValidationErrorResponse.parse(json);
 
-    const result = ValidationErrorResponse.parse(response.json());
-
-    expect(result.error).toBe("validation");
     expect(result.field).toBe("birthday");
+  });
+
+  test("Reject upserting a profile with birthday in the future", async () => {
+    const { json } = await app.injectPut("/api/profile", {
+      session: scenario.users[0].sessions[0].id,
+      payload: {
+        name: "invalid profile",
+        bio: "This is a profile with a birthday in the future.",
+        birthday: new Date(Date.now() + 1000 * 60 * 60),
+      },
+      expect: {
+        statusCode: 422,
+        errorType: "validation",
+      },
+    });
+
+    const result = ValidationErrorResponse.parse(json);
+
+    expect(result.field).toBe("birthday");
+  });
+
+  test("Reject upserting a profile with a bio longer than 160 characters", async () => {
+    const { json } = await app.injectPut("/api/profile", {
+      session: scenario.users[0].sessions[0].id,
+      payload: {
+        name: "invalid profile to test bio length",
+        bio: "A".repeat(161),
+        birthday: new Date(2000, 1, 1),
+      },
+      expect: {
+        statusCode: 422,
+        errorType: "validation",
+      },
+    });
+
+    const result = ValidationErrorResponse.parse(json);
+
+    expect(result.field).toBe("bio");
   });
 });

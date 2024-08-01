@@ -5,7 +5,6 @@ const usernameRegex = /^[a-z][-a-z0-9_]*$/i;
 // Primitives
 export const StringId = z.string().describe("String ID");
 export const NumberId = z.number().int().positive().describe("Number ID");
-export const Date = z.coerce.date();
 
 // User
 export const Username = z
@@ -29,8 +28,13 @@ export const SessionId = StringId.length(40).describe("Session ID");
 
 // Profile
 export const Name = z.string().min(1).max(64).describe("Name");
-export const Birthday = Date.describe("Birthday");
-export const Bio = z.string().max(256).describe("Bio");
+export const Birthday = z.coerce
+  .date()
+  .refine((value) => value < new Date(), {
+    message: "Birthday must be in the past",
+  })
+  .describe("Birthday");
+export const Bio = z.string().max(160).describe("Bio");
 
 // Error
 export const ErrorType = z.enum([

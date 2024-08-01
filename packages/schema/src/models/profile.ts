@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { Bio, Date, Name, NumberId, StringId } from "../fields";
+import { Bio, Birthday, Name, NumberId, StringId } from "../fields";
 
 export const Profile = z.object({
   id: NumberId.optional(),
   userId: StringId.optional(),
   name: Name,
-  birthday: Date,
+  birthday: Birthday,
   bio: Bio,
 });
 export type Profile = z.infer<typeof Profile>;

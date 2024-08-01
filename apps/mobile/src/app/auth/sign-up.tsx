@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/lib/components/button";
 import { TextInput } from "@/lib/components/form/input/text";
-import { Card, CardTitle } from "@/lib/components/card";
+import { Card, CardList, CardTitle } from "@/lib/components/card";
 import { Form } from "@/lib/components/form";
 import { UserCreateForm } from "@repo/schema";
 import { useCreateUser } from "@repo/hook/query";
@@ -28,7 +28,7 @@ export default function SignUp() {
   );
 
   return (
-    <>
+    <CardList>
       <Card>
         <CardTitle title="Sign Up for Mutiny" />
 
@@ -45,6 +45,6 @@ export default function SignUp() {
 
         <Button title="Sign Up" onPress={onSubmit} />
       </Card>
-    </>
+    </CardList>
   );
 }

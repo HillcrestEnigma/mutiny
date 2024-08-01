@@ -1,4 +1,4 @@
-import { Card, CardSection, CardTitle } from "@/lib/components/card";
+import { Card, CardList, CardSection, CardTitle } from "@/lib/components/card";
 import { handleMutationError } from "@/lib/utils/error";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -20,11 +20,7 @@ export default function CreateProfile() {
   const { stylesheet } = useStyle({
     stylesheet: () => ({
       container: {
-        height: "100%",
         width: "100%",
-      },
-      main: {
-        gap: 20,
       },
     }),
   });
@@ -62,31 +58,35 @@ export default function CreateProfile() {
   };
 
   return (
-    <ScrollView
-      style={stylesheet.container}
-      contentContainerStyle={stylesheet.main}
-    >
-      <Card>
-        <CardSection>
-          <CardTitle title="Create Your Profile" />
-          <CardTitle
-            title={`Tell us about you, ${user.username}!`}
-            fontSize={18}
-          />
-        </CardSection>
+    <ScrollView style={stylesheet.container}>
+      <CardList>
+        <Card>
+          <CardSection>
+            <CardTitle title="Create Your Profile" />
+            <CardTitle
+              title={`Tell us about you, ${user.username}!`}
+              fontSize={18}
+            />
+          </CardSection>
 
-        <Form<ProfileUpsertForm> form={form}>
-          <TextInput name="name" label="Name" />
-          <DateInput name="birthday" label="Birthday" />
-          <TextInput name="bio" label="Bio" />
-        </Form>
+          <Form<ProfileUpsertForm> form={form}>
+            <TextInput name="name" label="Name" />
+            <DateInput name="birthday" label="Birthday" />
+            <TextInput
+              name="bio"
+              label="Bio"
+              multiline={true}
+              numberOfLines={6}
+            />
+          </Form>
 
-        <Button title="Submit" onPress={onSubmit} />
-      </Card>
-      <Card>
-        <CardTitle title={`Not ${user?.username}?`} fontSize={24} />
-        <Button title="Sign Out" onPress={signOut} />
-      </Card>
+          <Button title="Submit" onPress={onSubmit} />
+        </Card>
+        <Card>
+          <CardTitle title={`Not ${user?.username}?`} fontSize={24} />
+          <Button title="Sign Out" onPress={signOut} />
+        </Card>
+      </CardList>
     </ScrollView>
   );
 }

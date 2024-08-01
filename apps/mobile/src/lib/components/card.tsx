@@ -1,6 +1,6 @@
-import { View, type DimensionValue } from "react-native";
+import { View, type DimensionValue, type ViewStyle } from "react-native";
 import { type ReactNode } from "react";
-import { useStyle } from "@/lib/hooks/style";
+import { Style, useStyle } from "@/lib/hooks/style";
 import { Text } from "./text";
 
 interface CardProps {
@@ -15,6 +15,7 @@ export function Card({ children, height, gap = 20 }: CardProps) {
       card: {
         height,
         gap,
+        margin: style.spacing.gap,
         padding: 30,
         borderRadius: 45,
         justifyContent: "space-between",
@@ -70,6 +71,39 @@ export function CardTitle({ title, flex, fontSize = 30 }: CardTitleProps) {
   return (
     <View style={stylesheet.container}>
       <Text style={stylesheet.title}>{title}</Text>
+    </View>
+  );
+}
+
+interface CardListProps {
+  flex?: number;
+  gap?: number;
+  style?: ViewStyle;
+  children: ReactNode;
+}
+
+export function CardList({
+  flex,
+  gap,
+  style: stylesheetGiven,
+  children,
+}: CardListProps) {
+  const { stylesheet } = useStyle({
+    stylesheet: ({ style }) => ({
+      container: {
+        width: "100%",
+        height: "100%",
+        flex,
+        gap: gap ?? style.spacing.gap,
+        padding: style.spacing.gap,
+        justifyContent: "space-around",
+      },
+    }),
+  });
+
+  return (
+    <View style={[stylesheet.container, stylesheetGiven]}>
+      <Style gap={0}>{children}</Style>
     </View>
   );
 }

@@ -15,7 +15,6 @@ export default function AuthFormLayout() {
       main: {
         alignItems: "center",
         justifyContent: "center",
-        padding: 20,
         height: "100%",
         width: "100%",
       },

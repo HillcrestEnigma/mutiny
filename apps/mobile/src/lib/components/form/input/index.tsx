@@ -27,7 +27,7 @@ export function Input<FormInputs extends FieldValues>({
     stylesheet: ({ style }) => ({
       container: {
         gap: 10,
-        maxHeight: 100,
+        minHeight: 100,
       },
       textContainer: {
         flexDirection: "row",

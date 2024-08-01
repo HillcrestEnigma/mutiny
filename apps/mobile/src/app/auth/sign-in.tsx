@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/lib/components/button";
 import { TextInput } from "@/lib/components/form/input/text";
-import { Card, CardTitle } from "@/lib/components/card";
+import { Card, CardList, CardTitle } from "@/lib/components/card";
 import { Form } from "@/lib/components/form";
 import { SessionCreateForm } from "@repo/schema";
 import { useCreateSession } from "@repo/hook/query";
@@ -40,7 +40,7 @@ export default function SignIn() {
   );
 
   return (
-    <>
+    <CardList>
       <Card>
         <CardTitle title="Sign In to Mutiny" />
 
@@ -51,6 +51,6 @@ export default function SignIn() {
 
         <Button title="Sign In" onPress={onSubmit} />
       </Card>
-    </>
+    </CardList>
   );
 }

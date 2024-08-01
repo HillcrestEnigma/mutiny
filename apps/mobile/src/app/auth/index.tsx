@@ -1,17 +1,13 @@
 import { useStyle } from "@/lib/hooks/style";
-import { View } from "react-native";
 import { Link, Redirect } from "expo-router";
 import { Button } from "@/lib/components/button";
-import { Card } from "@/lib/components/card";
+import { Card, CardList } from "@/lib/components/card";
 import { useAuthenticatedSession } from "@repo/hook/query";
 
 export default function Index() {
   const { stylesheet } = useStyle({
     stylesheet: () => ({
-      container: {
-        height: "100%",
-        width: "100%",
-        flexDirection: "column",
+      cardList: {
         justifyContent: "flex-end",
       },
     }),
@@ -28,7 +24,7 @@ export default function Index() {
   }
 
   return (
-    <View style={stylesheet.container}>
+    <CardList style={stylesheet.cardList}>
       <Card>
         <Link href="/auth/sign-in" asChild>
           <Button title="Sign In" />
@@ -37,6 +33,6 @@ export default function Index() {
           <Button title="Sign Up" />
         </Link>
       </Card>
-    </View>
+    </CardList>
   );
 }

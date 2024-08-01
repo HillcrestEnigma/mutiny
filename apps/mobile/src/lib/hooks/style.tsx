@@ -17,9 +17,14 @@ export interface FontStyle {
   size?: TextStyle["fontSize"];
 }
 
+export interface SpacingStyle {
+  gap?: number;
+}
+
 export interface Style {
   accent?: AccentColor;
   font?: FontStyle;
+  spacing?: SpacingStyle;
 }
 
 function mergeStyles(
@@ -46,9 +51,17 @@ function mergeStyles(
       size: merge(resultFont?.size, styleFont?.size),
     };
 
+    const resultSpacing = result?.spacing;
+    const styleSpacing = style?.spacing;
+
+    const spacingStyle = {
+      gap: merge(resultSpacing?.gap, styleSpacing?.gap),
+    };
+
     return {
       accent: merge(result?.accent, style?.accent),
       font: fontStyle,
+      spacing: spacingStyle,
     };
   }, {});
 }
@@ -71,6 +84,7 @@ export function useStyle<T extends StyleSheet.NamedStyles<T>>({
     {
       accent: theme.primary,
       font: { family: "Inter", weight: "400", size: 16 },
+      spacing: { gap: 20 },
     },
     rawstyle,
   ]) as Required<Style>;
@@ -93,6 +107,7 @@ export function Style({
   fontFamily,
   fontWeight,
   fontSize,
+  gap,
   style: styleGiven,
   inherit = false,
   reset = false,
@@ -102,6 +117,7 @@ export function Style({
   fontFamily?: FontStyle["family"];
   fontWeight?: FontStyle["weight"];
   fontSize?: FontStyle["size"];
+  gap?: SpacingStyle["gap"];
   style?: Style;
   inherit?: boolean;
   reset?: boolean;
@@ -126,6 +142,9 @@ export function Style({
             family: fontFamily,
             weight: fontWeight,
             size: fontSize,
+          },
+          spacing: {
+            gap,
           },
         },
         styleGiven,
